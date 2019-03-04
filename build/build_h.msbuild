@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"> 
+
+<ItemGroup>	
+<ClInclude Include = "..\src\pch.h"/>	
+<ClInclude Include = "..\src\pch\pch.h"/>	
+<ClInclude Include = "..\src\pch\targetver.h"/>	
+<ClInclude Include = "..\src\uwp\uc_uwp_device_resources.h"/>	
+<ClInclude Include = "..\src\uwp\uc_uwp_gx_render_context.h"/>	
+<ClInclude Include = "..\src\uwp\uc_uwp_gx_submitable.h"/>	
+<ClInclude Include = "..\src\uwp\uc_uwp_renderer.h"/>	
+<ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl.h"/>	
+<ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl_command.h"/>	
+<ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl_window.h"/>
+</ItemGroup></Project> 
