@@ -49,11 +49,6 @@ namespace uc
                 size                                m_front_buffer_size;
                 double                              m_frame_time;
                 float                               m_scale_render;
-
-
-                gx::dx12::gpu_msaa_depth_buffer*    m_shadow_depth_buffer;
-                gx::dx12::gpu_color_buffer*         m_shadow_map;
-                size                                m_shadow_buffer_size;
             };
 
             struct shadow_render_context : public render_context

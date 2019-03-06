@@ -12,21 +12,16 @@
 
 #include <uc/gx/geo/geometry_allocator.h>
 #include <uc/gx/geo/indexed_geometry.h>
-#include <uc/gx/pinhole_camera_dispatcher.h>
+#include <uc/gxu/pinhole_camera_dispatcher.h>
 
 #include <uc/io/pad.h>
 #include <uc/io/mouse.h>
 #include <uc/io/keyboard.h>
 
 #include "uc_uwp_device_resources.h"
-
-#include "uc_uwp_renderer_overlay_page_manager.h"
-#include "uc_uwp_gx_render_world_manager.h"
-
-#include "uc_uwp_gx_render_object.h"
 #include "uc_uwp_renderer_impl_command.h"
 
-#include <uc_dev/gx/geo/geometry_allocator.h>
+#include <uc/gx/geo/geometry_allocator.h>
 
 struct ISwapChainPanelNative;
 
@@ -38,7 +33,7 @@ namespace uc
         {
         public:
 
-            renderer_impl(bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information, ISwapChainPanelNative*  swapchainpanel = nullptr);
+            renderer_impl(bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information);
             ~renderer_impl();
 
             void update();
@@ -69,9 +64,6 @@ namespace uc
             std::unique_ptr<gx::dx12::gpu_frame_color_buffer>                                   m_frame_shadow_map[3];
 
             std::unique_ptr<gx::geo::geometry_allocator>                                        m_geometry_allocator;
-
-            std::unique_ptr<gxu::render_world_manager>                                          m_render_world_manager;
-            std::unique_ptr<overlay::page_manager>                                              m_overlay_page_manager;
 
             window_environment                                                                  m_window_enviroment;
             winrt::Windows::UI::Core::CoreWindow                                                m_window = nullptr;

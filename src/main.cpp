@@ -85,11 +85,6 @@ public:
         m_core_window			= window;
         m_display_information	= currentDisplayInformation;
         
-        /*
-        Windows::UI::Core::CoreWindow^					w  = reinterpret_cast<Windows::UI::Core::CoreWindow^>(winrt::get(window));
-        Windows::Graphics::Display::DisplayInformation^ di = reinterpret_cast<Windows::Graphics::Display::DisplayInformation^>(winrt::get(currentDisplayInformation));
-        */
-
         m_renderer  = std::make_unique<uc::uwp::renderer>(&m_windowClosed, window, m_display_information );
         m_renderer->set_display_info(m_display_information);
         m_renderer->refresh_display_layout();

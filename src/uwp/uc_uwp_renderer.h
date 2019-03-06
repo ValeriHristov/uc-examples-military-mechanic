@@ -19,7 +19,7 @@ namespace uc
         {
             public:
 
-            renderer(bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information, ISwapChainPanelNative*  swapchainpanel = nullptr);
+            renderer(bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information);
 
             ~renderer();
 

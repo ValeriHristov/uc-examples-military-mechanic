@@ -6,8 +6,8 @@ namespace uc
 {
     namespace uwp
     {
-        renderer::renderer(bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information, ISwapChainPanelNative*  swapchainpanel) :
-            m_impl(new uwp::renderer_impl(window_close, window, display_information, swapchainpanel))
+        renderer::renderer(bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information) :
+            m_impl(new uwp::renderer_impl(window_close, window, display_information))
         {
 
         }

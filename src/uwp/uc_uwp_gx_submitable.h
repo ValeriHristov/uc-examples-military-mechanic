@@ -3,8 +3,8 @@
 #include <memory>
 #include <vector>
 
-#include <uc_dev/gx/dx12/dx12.h>
-#include <uc_dev/util/noncopyable.h>
+#include <uc/gx/dx12/dx12.h>
+#include <uc/util/noncopyable.h>
 
 namespace uc
 {
