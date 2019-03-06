@@ -11,5 +11,6 @@
 <ClInclude Include = "..\src\uwp\uc_uwp_renderer.h"/>	
 <ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl.h"/>	
 <ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl_command.h"/>	
-<ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl_window.h"/>
+<ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl_window.h"/>	
+<ClInclude Include = "..\src\uwp\uc_uwp_ui_helper.h"/>
 </ItemGroup></Project> 

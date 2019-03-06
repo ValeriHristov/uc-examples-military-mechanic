@@ -36,6 +36,9 @@
     <ClInclude Include="..\src\uwp\uc_uwp_renderer_impl_window.h">
       <Filter>src\uwp</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_ui_helper.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src" />
