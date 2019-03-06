@@ -12,7 +12,7 @@
 #include <winrt/Windows.UI.Core.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
-#include <uc_dev/os/windows/com_initializer.h>
+#include <uc/os/windows/com_initializer.h>
 
 #include "uwp/uc_uwp_renderer.h"
 

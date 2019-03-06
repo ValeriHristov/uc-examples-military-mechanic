@@ -1,5 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\uc-io-input.1.0.2\build\native\uc-io-input.props" Condition="Exists('packages\uc-io-input.1.0.2\build\native\uc-io-input.props')" />
+  <Import Project="packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.31\build\uc-tools-graphics-gpu-pipeline-compiler.props" Condition="Exists('packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.31\build\uc-tools-graphics-gpu-pipeline-compiler.props')" />
+  <Import Project="packages\uc-graphics.1.0.11\build\native\uc-graphics.props" Condition="Exists('packages\uc-graphics.1.0.11\build\native\uc-graphics.props')" />
+  <Import Project="packages\uc-tools-msbuild-tasks.1.0.24\build\uc-tools-msbuild-tasks.props" Condition="Exists('packages\uc-tools-msbuild-tasks.1.0.24\build\uc-tools-msbuild-tasks.props')" />
+  <Import Project="packages\uc-tools-graphics-gpu-shader-compiler.1.0.6\build\uc-tools-graphics-gpu-shader-compiler.props" Condition="Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.6\build\uc-tools-graphics-gpu-shader-compiler.props')" />
+  <Import Project="packages\uc-serialization-engine.1.0.2\build\native\uc-serialization-engine.props" Condition="Exists('packages\uc-serialization-engine.1.0.2\build\native\uc-serialization-engine.props')" />
+  <Import Project="packages\uc-math.1.0.4\build\native\uc-math.props" Condition="Exists('packages\uc-math.1.0.4\build\native\uc-math.props')" />
+  <Import Project="packages\uc-imaging.1.0.12\build\native\uc-imaging.props" Condition="Exists('packages\uc-imaging.1.0.12\build\native\uc-imaging.props')" />
+  <Import Project="packages\uc-core.1.0.13\build\native\uc-core.props" Condition="Exists('packages\uc-core.1.0.13\build\native\uc-core.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="release|x64">
       <Configuration>release</Configuration>
@@ -13,8 +22,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E97E2A28-0291-4337-9863-AF619A7C606F}</ProjectGuid>
-    <Keyword>ucdev_app</Keyword>
-    <RootNamespace>ucdev_app</RootNamespace>
+    <Keyword>uc_example</Keyword>
+    <RootNamespace>uc_example</RootNamespace>
     <AppContainerApplication>true</AppContainerApplication>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.17763.0</WindowsTargetPlatformMinVersion>
@@ -76,11 +85,10 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>../src/pch;../src;../resources</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../src/pch;../src;../resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -103,8 +111,41 @@
     <Image Include="assets\storelogo.png" />
     <Image Include="assets\wide310x150logo.scale-200.png" />
   </ItemGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="build_h.msbuild" />
   <Import Project="build_cpp.msbuild" />
+  <Import Project="packages\microsoft-gsl-library.1.0.7\build\native\microsoft-gsl-library.targets" Condition="Exists('packages\microsoft-gsl-library.1.0.7\build\native\microsoft-gsl-library.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\microsoft-gsl-library.1.0.7\build\native\microsoft-gsl-library.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\microsoft-gsl-library.1.0.7\build\native\microsoft-gsl-library.targets'))" />
+    <Error Condition="!Exists('packages\uc-core.1.0.13\build\native\uc-core.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-core.1.0.13\build\native\uc-core.props'))" />
+    <Error Condition="!Exists('packages\uc-core.1.0.13\build\native\uc-core.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-core.1.0.13\build\native\uc-core.targets'))" />
+    <Error Condition="!Exists('packages\uc-imaging.1.0.12\build\native\uc-imaging.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-imaging.1.0.12\build\native\uc-imaging.props'))" />
+    <Error Condition="!Exists('packages\uc-imaging.1.0.12\build\native\uc-imaging.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-imaging.1.0.12\build\native\uc-imaging.targets'))" />
+    <Error Condition="!Exists('packages\uc-math.1.0.4\build\native\uc-math.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-math.1.0.4\build\native\uc-math.props'))" />
+    <Error Condition="!Exists('packages\uc-math.1.0.4\build\native\uc-math.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-math.1.0.4\build\native\uc-math.targets'))" />
+    <Error Condition="!Exists('packages\uc-serialization-engine.1.0.2\build\native\uc-serialization-engine.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-serialization-engine.1.0.2\build\native\uc-serialization-engine.props'))" />
+    <Error Condition="!Exists('packages\uc-serialization-engine.1.0.2\build\native\uc-serialization-engine.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-serialization-engine.1.0.2\build\native\uc-serialization-engine.targets'))" />
+    <Error Condition="!Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.6\build\uc-tools-graphics-gpu-shader-compiler.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-shader-compiler.1.0.6\build\uc-tools-graphics-gpu-shader-compiler.props'))" />
+    <Error Condition="!Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.6\build\uc-tools-graphics-gpu-shader-compiler.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-shader-compiler.1.0.6\build\uc-tools-graphics-gpu-shader-compiler.targets'))" />
+    <Error Condition="!Exists('packages\uc-tools-msbuild-tasks.1.0.24\build\uc-tools-msbuild-tasks.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-msbuild-tasks.1.0.24\build\uc-tools-msbuild-tasks.props'))" />
+    <Error Condition="!Exists('packages\uc-tools-msbuild-tasks.1.0.24\build\uc-tools-msbuild-tasks.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-msbuild-tasks.1.0.24\build\uc-tools-msbuild-tasks.targets'))" />
+    <Error Condition="!Exists('packages\uc-graphics.1.0.11\build\native\uc-graphics.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-graphics.1.0.11\build\native\uc-graphics.props'))" />
+    <Error Condition="!Exists('packages\uc-graphics.1.0.11\build\native\uc-graphics.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-graphics.1.0.11\build\native\uc-graphics.targets'))" />
+    <Error Condition="!Exists('packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.31\build\uc-tools-graphics-gpu-pipeline-compiler.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.31\build\uc-tools-graphics-gpu-pipeline-compiler.props'))" />
+    <Error Condition="!Exists('packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.31\build\uc-tools-graphics-gpu-pipeline-compiler.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.31\build\uc-tools-graphics-gpu-pipeline-compiler.targets'))" />
+    <Error Condition="!Exists('packages\uc-io-input.1.0.2\build\native\uc-io-input.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-io-input.1.0.2\build\native\uc-io-input.props'))" />
+    <Error Condition="!Exists('packages\uc-io-input.1.0.2\build\native\uc-io-input.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-io-input.1.0.2\build\native\uc-io-input.targets'))" />
+  </Target>
+  <Import Project="packages\uc-core.1.0.13\build\native\uc-core.targets" Condition="Exists('packages\uc-core.1.0.13\build\native\uc-core.targets')" />
+  <Import Project="packages\uc-imaging.1.0.12\build\native\uc-imaging.targets" Condition="Exists('packages\uc-imaging.1.0.12\build\native\uc-imaging.targets')" />
+  <Import Project="packages\uc-math.1.0.4\build\native\uc-math.targets" Condition="Exists('packages\uc-math.1.0.4\build\native\uc-math.targets')" />
+  <Import Project="packages\uc-serialization-engine.1.0.2\build\native\uc-serialization-engine.targets" Condition="Exists('packages\uc-serialization-engine.1.0.2\build\native\uc-serialization-engine.targets')" />
+  <Import Project="packages\uc-tools-graphics-gpu-shader-compiler.1.0.6\build\uc-tools-graphics-gpu-shader-compiler.targets" Condition="Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.6\build\uc-tools-graphics-gpu-shader-compiler.targets')" />
+  <Import Project="packages\uc-tools-msbuild-tasks.1.0.24\build\uc-tools-msbuild-tasks.targets" Condition="Exists('packages\uc-tools-msbuild-tasks.1.0.24\build\uc-tools-msbuild-tasks.targets')" />
+  <Import Project="packages\uc-graphics.1.0.11\build\native\uc-graphics.targets" Condition="Exists('packages\uc-graphics.1.0.11\build\native\uc-graphics.targets')" />
+  <Import Project="packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.31\build\uc-tools-graphics-gpu-pipeline-compiler.targets" Condition="Exists('packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.31\build\uc-tools-graphics-gpu-pipeline-compiler.targets')" />
+  <Import Project="packages\uc-io-input.1.0.2\build\native\uc-io-input.targets" Condition="Exists('packages\uc-io-input.1.0.2\build\native\uc-io-input.targets')" />
 </Project>

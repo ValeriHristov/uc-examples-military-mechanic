@@ -1,12 +1,6 @@
 #include "pch.h"
 #include "uc_uwp_device_resources.h"
 
-
-#include <uc_dev/gx/d2d/dwrite.h>
-#include <uc_dev/gx/d2d/d2d.h>
-
-#include <uc_dev/gx/dx11/dx11.h>
-
 #include <dcomp.h>
 
 #include "uc_uwp_device_swap_chain_resources.h"
@@ -62,14 +56,6 @@ namespace uc
       
             
 
-            /*
-            //test here to check for support of overlays
-            Microsoft::WRL::ComPtr<IDXGIOutput> dxgiOutput;
-            gx::dx12::throw_if_failed(adapters[0]->EnumOutputs(0, &dxgiOutput));
-            Microsoft::WRL::ComPtr<IDXGIOutput2> dxgiOutput2;
-            gx::dx12::throw_if_failed(dxgiOutput.As(&dxgiOutput2));
-            */
-
             Microsoft::WRL::ComPtr<ID3D12CommandQueue>                      present_copy_queue;
             Microsoft::WRL::ComPtr<ID3D12CommandQueue>                      present_compute_queue;
             {
@@ -97,8 +83,7 @@ namespace uc
             m_compute_context_allocator     = std::make_unique< gpu_command_context_allocator>(m_resource_creator.get(), m_compute_command_manager.get(), m_compute_queue.get());
 
             m_upload_queue                  = std::make_unique<gpu_upload_queue>(m_device.Get(), m_resource_creator.get(), m_copy_context_allocator.get(), m_copy_queue.get());
-            
-            m_dwrite_factory                = gx::dwrite::create_dwrite_factory();
+           
         }
 
         void device_resources::set_window(const window_environment* environment )

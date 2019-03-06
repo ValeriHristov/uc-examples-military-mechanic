@@ -1,39 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?> 
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"> 
-
-<ItemGroup>
-<Filter Include = "src"/>
-<Filter Include = "src\pch"/>
-<Filter Include = "src\uwp"/>
-</ItemGroup>
-<ItemGroup>	
-<ClInclude Include = "..\src\pch.h"><Filter>src</Filter></ClInclude>	
-<ClInclude Include = "..\src\pch\pch.h"><Filter>src\pch</Filter></ClInclude>	
-<ClInclude Include = "..\src\pch\targetver.h"><Filter>src\pch</Filter></ClInclude>	
-<ClInclude Include = "..\src\uwp\uc_uwp_device_resources.h"><Filter>src\uwp</Filter></ClInclude>	
-<ClInclude Include = "..\src\uwp\uc_uwp_gx_render_context.h"><Filter>src\uwp</Filter></ClInclude>	
-<ClInclude Include = "..\src\uwp\uc_uwp_gx_submitable.h"><Filter>src\uwp</Filter></ClInclude>	
-<ClInclude Include = "..\src\uwp\uc_uwp_renderer.h"><Filter>src\uwp</Filter></ClInclude>	
-<ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl.h"><Filter>src\uwp</Filter></ClInclude>	
-<ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl_command.h"><Filter>src\uwp</Filter></ClInclude>	
-<ClInclude Include = "..\src\uwp\uc_uwp_renderer_impl_window.h"><Filter>src\uwp</Filter></ClInclude>
-</ItemGroup>
-<ItemGroup>
-<Filter Include = "src"/>
-<Filter Include = "src\pch"/>
-</ItemGroup>
-<ItemGroup>	
-<ClCompile Include = "..\src\pch.cpp"><Filter>src</Filter></ClCompile>	
-<ClCompile Include = "..\src\pch\pch.cpp"><Filter>src\pch</Filter></ClCompile>
-</ItemGroup>
-<ItemGroup>
-<Filter Include = "src"/>
-<Filter Include = "src\uwp"/>
-</ItemGroup>
-<ItemGroup>	
-<ClCompile Include = "..\src\main.cpp"><Filter>src</Filter></ClCompile>	
-<ClCompile Include = "..\src\uwp\uc_uwp_device_resources.cpp"><Filter>src\uwp</Filter></ClCompile>	
-<ClCompile Include = "..\src\uwp\uc_uwp_gx_render_context.cpp"><Filter>src\uwp</Filter></ClCompile>	
-<ClCompile Include = "..\src\uwp\uc_uwp_renderer.cpp"><Filter>src\uwp</Filter></ClCompile>	
-<ClCompile Include = "..\src\uwp\uc_uwp_renderer_impl.cpp"><Filter>src\uwp</Filter></ClCompile>
-</ItemGroup></Project> 
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src" />
+    <Filter Include="src\pch" />
+    <Filter Include="src\uwp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\pch\pch.h">
+      <Filter>src\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\pch\targetver.h">
+      <Filter>src\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_device_resources.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_device_swap_chain_resources.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_gx_render_context.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_gx_submitable.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_renderer.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_renderer_impl.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_renderer_impl_command.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_renderer_impl_window.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src" />
+    <Filter Include="src\pch" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\pch\pch.cpp">
+      <Filter>src\pch</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src" />
+    <Filter Include="src\uwp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uwp\uc_uwp_device_resources.cpp">
+      <Filter>src\uwp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uwp\uc_uwp_device_swap_chain_resources.cpp">
+      <Filter>src\uwp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uwp\uc_uwp_gx_render_context.cpp">
+      <Filter>src\uwp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uwp\uc_uwp_renderer.cpp">
+      <Filter>src\uwp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uwp\uc_uwp_renderer_impl.cpp">
+      <Filter>src\uwp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\lockscreenlogo.scale-200.png" />
+    <Image Include="assets\splashscreen.scale-200.png" />
+    <Image Include="assets\square150x150logo.scale-200.png" />
+    <Image Include="assets\square44x44logo.scale-200.png" />
+    <Image Include="assets\square44x44logo.targetsize-24_altform-unplated.png" />
+    <Image Include="assets\storelogo.png" />
+    <Image Include="assets\wide310x150logo.scale-200.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="ucdev_app.vcxproj" />
+    <None Include="ucdev_app_TemporaryKey.pfx" />
+    <None Include="ucdev_app_key.pfx" />
+  </ItemGroup>
+</Project>

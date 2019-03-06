@@ -2,24 +2,19 @@
 
 #include <memory>
 
-#include <d3d11.h>
 #include <d3d12.h>
-#include <d3d11on12.h>
 #include <dxgi1_5.h>
 
 #include <wrl/client.h>
-#include <d2d1_3.h>
-#include <dwrite.h>
 
-#include <uc_dev/util/noncopyable.h>
-#include <uc_dev/gx/dx12/dx12.h>
+#include <uc/util/noncopyable.h>
+#include <uc/gx/dx12/dx12.h>
 
 #include "uc_uwp_renderer_impl_window.h"
 #include "uc_uwp_device_swap_chain_resources.h"
 
 #include <windows.foundation.h>
 
-#define MAX_SWAP_CHAINS 8
 
 namespace uc
 {
@@ -60,16 +55,6 @@ namespace uc
             gx::dx12::gpu_back_buffer* back_buffer( swap_chains s ) const
             {
                 return swap_chain(s)->back_buffer_dx12();
-            }
-
-            ID3D11Resource* back_buffer_dx11( swap_chains s ) const
-            {
-                return swap_chain(s)->back_buffer_dx11();
-            }
-
-            ID2D1Bitmap1* back_buffer_d2d( swap_chains s ) const
-            {
-                return swap_chain(s)->back_buffer_d2d();
             }
 
             ID3D12Device* device_d2d12() const
@@ -117,40 +102,12 @@ namespace uc
                 return m_upload_queue.get();
             }
 
-            ID2D1DeviceContext* device_context_2d( swap_chains s ) const
-            {
-                return swap_chain(s)->device_context_2d();
-            }
-
-            ID2D1Factory3* d2d_factory( ) const
-            {
-                return swap_chain(swap_chains::overlay)->d2d_factory();
-            }
-
-            IDWriteFactory* dwrite_factory() const
-            {
-                return m_dwrite_factory.Get();
-            }
-
-            ID3D11On12Device* device_11on12( swap_chains s ) const
-            {
-                return swap_chain(s)->device_11on12();
-            }
-
-            ID3D11DeviceContext* device_context_d3d11( swap_chains s) const
-            {
-                return swap_chain(s)->device_context_d3d11();
-            }
 
             private:
 
             void    create_d3d_12();
 
-#if defined(_DEBUG)
-            Microsoft::WRL::ComPtr<ID3D12Debug1>                                        m_debug;
-#endif
             Microsoft::WRL::ComPtr<ID3D12Device>                                        m_device;
-            Microsoft::WRL::ComPtr<IDWriteFactory>                                      m_dwrite_factory;
             std::unique_ptr<gx::dx12::gpu_resource_create_context>                      m_resource_creator;
             std::unique_ptr<gx::dx12::gpu_command_queue>                                m_copy_queue;
             std::unique_ptr<gx::dx12::gpu_command_manager>                              m_copy_command_manager;
@@ -161,7 +118,7 @@ namespace uc
             std::unique_ptr<gx::dx12::gpu_upload_queue>                                 m_upload_queue;
             std::unique_ptr<gx::dx12::gpu_upload_queue>                                 m_upload_resource_queue;
 
-            std::unique_ptr<swap_chain::resources>                                      m_swap_chains[MAX_SWAP_CHAINS];
+            std::unique_ptr<swap_chain::resources>                                      m_swap_chains[2];
             uint32_t                                                                    m_swap_chain_count;
 
             //1. ui composition queue   -> fixed resolution when the program starts or window changes    -> xaml

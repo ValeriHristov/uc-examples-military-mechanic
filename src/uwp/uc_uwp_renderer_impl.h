@@ -7,15 +7,16 @@
 #include <winrt/windows.graphics.display.h>
 #include <winrt/windows.ui.xaml.controls.h>
 
-#include <uc_dev/gx/dx12/dx12.h>
-#include <uc_dev/sys/profile_timer.h>
+#include <uc/gx/dx12/dx12.h>
+#include <uc/sys/profile_timer.h>
 
-#include <uc_dev/gx/geo/indexed_geometry.h>
-#include <uc_dev/gxu/pinhole_camera_dispatcher.h>
+#include <uc/gx/geo/geometry_allocator.h>
+#include <uc/gx/geo/indexed_geometry.h>
+#include <uc/gx/pinhole_camera_dispatcher.h>
 
-#include <uc_dev/io/pad.h>
-#include <uc_dev/io/mouse.h>
-#include <uc_dev/io/keyboard.h>
+#include <uc/io/pad.h>
+#include <uc/io/mouse.h>
+#include <uc/io/keyboard.h>
 
 #include "uc_uwp_device_resources.h"
 

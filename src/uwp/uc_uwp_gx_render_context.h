@@ -1,9 +1,11 @@
 #pragma once
 
+#include <cstdint>
 
-#include <uc_dev/io/pad.h>
-#include <uc_dev/io/mouse.h>
-#include <uc_dev/io/keyboard.h>
+#include <uc/io/pad.h>
+#include <uc/io/mouse.h>
+#include <uc/io/keyboard.h>
+
 
 
 namespace uc
