@@ -184,9 +184,6 @@ namespace uc
                     m_direct_command_manager = std::make_unique< gx::dx12::gpu_command_manager>(m_device_d3d_12.Get(), m_direct_queue.get());
                     m_direct_context_allocator = std::make_unique< gx::dx12::gpu_command_context_allocator>(resource_creator, m_direct_command_manager.get(), m_direct_queue.get());
                 }
-
-                create_d3d_11();
-                create_d2d_3();
             }
 
             resources::~resources()

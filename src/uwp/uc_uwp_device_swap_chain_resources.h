@@ -121,9 +121,6 @@ namespace uc
                 std::unique_ptr<gx::dx12::gpu_command_queue>                    m_direct_queue;
                 std::unique_ptr<gx::dx12::gpu_command_manager>                  m_direct_command_manager;
                 std::unique_ptr<gx::dx12::gpu_command_context_allocator>        m_direct_context_allocator;
-
-                void create_d3d_11();
-                void create_d2d_3();
                 swap_chain_type                                                 m_type;
             };
         }
