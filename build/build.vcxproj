@@ -16,9 +16,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="build_TemporaryKey.pfx" />
     <None Include="packages.config" />
-    <None Include="ucdev_app.vcxproj" />
-    <None Include="ucdev_app_TemporaryKey.pfx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E97E2A28-0291-4337-9863-AF619A7C606F}</ProjectGuid>
@@ -43,8 +42,8 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup Label="UserMacros">
-    <PackageCertificateThumbprint>EB13CCFB606EE7EBBD5B1E97A5E6A71E16E30390</PackageCertificateThumbprint>
-    <PackageCertificateKeyFile>ucdev_app_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>192B0527A0D66BF4AA8F13FBA81258787DDA0FE7</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>build_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
@@ -94,13 +93,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="ucdev_app_key.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\lockscreenlogo.scale-200.png" />

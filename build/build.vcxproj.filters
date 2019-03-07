@@ -87,8 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="ucdev_app.vcxproj" />
-    <None Include="ucdev_app_TemporaryKey.pfx" />
-    <None Include="ucdev_app_key.pfx" />
+    <None Include="build_TemporaryKey.pfx" />
   </ItemGroup>
 </Project>
