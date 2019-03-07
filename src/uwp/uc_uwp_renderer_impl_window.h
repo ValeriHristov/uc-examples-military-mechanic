@@ -1,12 +1,6 @@
 #pragma once
 
-#include <dxgi.h>
 #include <math.h>
-
-#include <winrt/windows.foundation.h>
-#include <winrt/windows.ui.core.h>
-#include <winrt/windows.ui.xaml.h>
-#include <winrt/windows.graphics.display.h>
 
 namespace uc
 {

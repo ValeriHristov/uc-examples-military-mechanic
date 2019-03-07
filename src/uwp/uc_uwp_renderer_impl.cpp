@@ -8,8 +8,6 @@
 #include <ppl.h>
 #include "uc_uwp_ui_helper.h"
 
-#include <windows.ui.xaml.media.dxinterop.h>
-
 namespace uc
 {
     namespace uwp

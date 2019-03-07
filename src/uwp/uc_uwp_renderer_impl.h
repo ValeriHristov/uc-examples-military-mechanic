@@ -2,11 +2,6 @@
 
 #include <concurrent_queue.h>
 
-#include "winrt/base.h"
-#include <winrt/windows.ui.core.h>
-#include <winrt/windows.graphics.display.h>
-#include <winrt/windows.ui.xaml.controls.h>
-
 #include <uc/gx/dx12/dx12.h>
 #include <uc/sys/profile_timer.h>
 

@@ -2,16 +2,6 @@
 
 #include <memory>
 #include <ppltasks.h>
-#include "winrt/base.h"
-
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.ApplicationModel.h>
-#include <winrt/Windows.ApplicationModel.Core.h>
-#include <winrt/Windows.ApplicationModel.Activation.h>
-#include <winrt/Windows.Graphics.Display.h>
-#include <winrt/Windows.UI.Core.h>
-#include <winrt/Windows.UI.ViewManagement.h>
-
 #include <uc/os/windows/com_initializer.h>
 
 #include "uwp/uc_uwp_renderer.h"
