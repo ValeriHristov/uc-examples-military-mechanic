@@ -137,7 +137,6 @@ namespace uc
             m_resources.direct_queue(device_resources::swap_chains::overlay)->insert_wait_on(m_resources.upload_queue()->flush());
             m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
 
-
             m_frame_index += 1;
             m_frame_index %= 3;
 
@@ -145,8 +144,9 @@ namespace uc
             auto graphics      = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
 
             graphics->clear(back_buffer);
-            graphics->submit();
 
+
+            graphics->submit();
 
             //if we did upload through the pci bus, insert waits
             m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.upload_queue()->flush());
