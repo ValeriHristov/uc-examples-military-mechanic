@@ -1,11 +1,13 @@
 #include "pch.h"
-
 #include <memory>
 #include <ppltasks.h>
 #include <uc/os/windows/com_initializer.h>
 
 #include "uwp/uc_uwp_renderer.h"
 
+#define UWP
+#include <uc/gx/lip/lip.h>
+#include "uwp/file.h"
 
 using namespace winrt::Windows::ApplicationModel;
 using namespace winrt::Windows::ApplicationModel::Core;
@@ -48,7 +50,10 @@ public:
 #else
 
         //ApplicationView::PreferredLaunchViewSize = Size(1600, 900);
-        ApplicationView::PreferredLaunchWindowingMode(ApplicationViewWindowingMode::FullScreen);
+        //ApplicationView::PreferredLaunchWindowingMode(ApplicationViewWindowingMode::FullScreen);
+
+		ApplicationView::PreferredLaunchViewSize(winrt::Windows::Foundation::Size(1600, 900));
+		ApplicationView::PreferredLaunchWindowingMode(ApplicationViewWindowingMode::PreferredLaunchViewSize);
 #endif
 
     }
@@ -82,8 +87,10 @@ public:
 
     virtual void Load( winrt::hstring)
     {
+		using namespace uc;
+		auto mesh = lip::create_from_compressed_lip_file<lip::derivatives_skinned_model>(L"appdata/models/military_mechanic.derivatives_skinned_model.model");
 
-    }
+	}
 
     virtual void Run()
     {
