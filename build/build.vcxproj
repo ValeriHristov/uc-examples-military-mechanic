@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\lzham-uwp-win64.1.0.0\build\lzham-uwp-win64.props" Condition="Exists('packages\lzham-uwp-win64.1.0.0\build\lzham-uwp-win64.props')" />
+  <Import Project="packages\uc-data-military-mechanic.1.0.5\build\native\uc-data-military-mechanic.props" Condition="Exists('packages\uc-data-military-mechanic.1.0.5\build\native\uc-data-military-mechanic.props')" />
   <Import Project="packages\uc-tools-graphics-gpu-shader-compiler.1.0.13\build\uc-tools-graphics-gpu-shader-compiler.props" Condition="Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.13\build\uc-tools-graphics-gpu-shader-compiler.props')" />
   <Import Project="packages\uc-tools-msbuild-tasks.1.0.32\build\uc-tools-msbuild-tasks.props" Condition="Exists('packages\uc-tools-msbuild-tasks.1.0.32\build\uc-tools-msbuild-tasks.props')" />
   <Import Project="packages\uc-graphics.1.0.31\build\native\uc-graphics.props" Condition="Exists('packages\uc-graphics.1.0.31\build\native\uc-graphics.props')" />
@@ -138,6 +140,10 @@
     <Error Condition="!Exists('packages\uc-tools-msbuild-tasks.1.0.32\build\uc-tools-msbuild-tasks.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-msbuild-tasks.1.0.32\build\uc-tools-msbuild-tasks.targets'))" />
     <Error Condition="!Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.13\build\uc-tools-graphics-gpu-shader-compiler.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-shader-compiler.1.0.13\build\uc-tools-graphics-gpu-shader-compiler.props'))" />
     <Error Condition="!Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.13\build\uc-tools-graphics-gpu-shader-compiler.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-shader-compiler.1.0.13\build\uc-tools-graphics-gpu-shader-compiler.targets'))" />
+    <Error Condition="!Exists('packages\uc-data-military-mechanic.1.0.5\build\native\uc-data-military-mechanic.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-data-military-mechanic.1.0.5\build\native\uc-data-military-mechanic.props'))" />
+    <Error Condition="!Exists('packages\uc-data-military-mechanic.1.0.5\build\native\uc-data-military-mechanic.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-data-military-mechanic.1.0.5\build\native\uc-data-military-mechanic.targets'))" />
+    <Error Condition="!Exists('packages\lzham-uwp-win64.1.0.0\build\lzham-uwp-win64.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\lzham-uwp-win64.1.0.0\build\lzham-uwp-win64.props'))" />
+    <Error Condition="!Exists('packages\lzham-uwp-win64.1.0.0\build\lzham-uwp-win64.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\lzham-uwp-win64.1.0.0\build\lzham-uwp-win64.targets'))" />
   </Target>
   <Import Project="packages\uc-core.1.0.13\build\native\uc-core.targets" Condition="Exists('packages\uc-core.1.0.13\build\native\uc-core.targets')" />
   <Import Project="packages\uc-imaging.1.0.12\build\native\uc-imaging.targets" Condition="Exists('packages\uc-imaging.1.0.12\build\native\uc-imaging.targets')" />
@@ -148,4 +154,6 @@
   <Import Project="packages\uc-graphics.1.0.31\build\native\uc-graphics.targets" Condition="Exists('packages\uc-graphics.1.0.31\build\native\uc-graphics.targets')" />
   <Import Project="packages\uc-tools-msbuild-tasks.1.0.32\build\uc-tools-msbuild-tasks.targets" Condition="Exists('packages\uc-tools-msbuild-tasks.1.0.32\build\uc-tools-msbuild-tasks.targets')" />
   <Import Project="packages\uc-tools-graphics-gpu-shader-compiler.1.0.13\build\uc-tools-graphics-gpu-shader-compiler.targets" Condition="Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.13\build\uc-tools-graphics-gpu-shader-compiler.targets')" />
+  <Import Project="packages\uc-data-military-mechanic.1.0.5\build\native\uc-data-military-mechanic.targets" Condition="Exists('packages\uc-data-military-mechanic.1.0.5\build\native\uc-data-military-mechanic.targets')" />
+  <Import Project="packages\lzham-uwp-win64.1.0.0\build\lzham-uwp-win64.targets" Condition="Exists('packages\lzham-uwp-win64.1.0.0\build\lzham-uwp-win64.targets')" />
 </Project>
