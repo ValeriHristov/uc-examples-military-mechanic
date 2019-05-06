@@ -113,6 +113,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="build_h.msbuild" />
   <Import Project="build_cpp.msbuild" />
+  <Import Project="build_hlsl.msbuild" />
   <Import Project="packages\microsoft-gsl-library.1.0.7\build\native\microsoft-gsl-library.targets" Condition="Exists('packages\microsoft-gsl-library.1.0.7\build\native\microsoft-gsl-library.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
