@@ -1,5 +1,5 @@
 version: 1.0.{build}
-image: Visual Studio 2019 Preview
+image: Visual Studio 2017
 clone_folder: c:\projects
 install:
   - cd c:\projects
