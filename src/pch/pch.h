@@ -12,17 +12,19 @@
 
 #include "targetver.h"
 
-
 #include <windows.ui.xaml.media.dxinterop.h>
 
 #include <dxgi.h>
+/*
 #include <winrt/windows.foundation.h>
 #include <winrt/windows.ui.core.h>
 #include <winrt/windows.ui.xaml.h>
 #include <winrt/windows.ui.xaml.controls.h>
 #include <winrt/windows.graphics.display.h>
+*/
 
 #include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.ApplicationModel.h>
 #include <winrt/Windows.ApplicationModel.Core.h>
 #include <winrt/Windows.ApplicationModel.Activation.h>
