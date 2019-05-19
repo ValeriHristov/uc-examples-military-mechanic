@@ -224,19 +224,17 @@ namespace uc
             m_frame_index += 1;
             m_frame_index %= 3;
 
-			
             auto&& back_buffer  = m_resources.back_buffer(device_resources::swap_chains::background);
 			auto w = back_buffer->width();
 			auto h = back_buffer->height();
 
 			auto&& depth_buffer = m_resources.resource_create_context()->create_frame_depth_buffer(w, h, DXGI_FORMAT_D32_FLOAT);
-            auto graphics      = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
+            auto graphics       = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
 
 			//
 			pinhole_camera camera;
 
 			camera.set_view_position(math::point3(0, 0, -5));
-
 			pinhole_camera_helper::set_look_at(&camera, math::point3(0, 0, 5), math::vector3(0, 0, -5), math::vector3(0, 1, 0));
 
 			auto perspective = perspective_matrix(camera);
@@ -256,11 +254,10 @@ namespace uc
 			graphics->set_render_target(depth_buffer);
 			graphics->set_descriptor_heaps();
 
-
 			graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
 			graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
 			graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			
+
 			//depth
 			{
 				graphics->set_pso(m_solid_graphics_depth);
@@ -271,15 +268,15 @@ namespace uc
 				graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
 				graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
 
-				{
-					auto m = transpose(world);
-					graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
-				}
-
 				graphics->set_graphics_constant_buffer(1, f);
 				graphics->set_graphics_srv_buffer(2, m_geometry.get());
 
 				graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+
+				{
+					auto m = transpose(world);
+					graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+				}
 				graphics->draw_indexed(m_mesh.m_indices_size / 4);
 			}
 
@@ -288,7 +285,6 @@ namespace uc
 			{
 				graphics->set_render_target(back_buffer, depth_buffer);
 				graphics->set_pso(m_solid_graphics);
-
 
 				graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
 				graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
@@ -300,16 +296,15 @@ namespace uc
 				graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
 				graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
 				graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+				graphics->set_graphics_constant_buffer(1, f);
+				graphics->set_graphics_srv_buffer(2, m_geometry.get());
+
+				graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
 				{
 					auto m = transpose(world);
 					graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
 				}
-
-				graphics->set_graphics_constant_buffer(1, f);
-				graphics->set_graphics_srv_buffer(2, m_geometry.get());
-
-				graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
 				for (auto i = 0U; i < m_mesh_opaque.m_opaque_textures.size(); ++i)
 				{
@@ -342,6 +337,5 @@ namespace uc
         {
 
         }
-
     }
 }
