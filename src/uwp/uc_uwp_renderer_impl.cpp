@@ -12,6 +12,7 @@
 #define UWP
 #include <uc/gx/pinhole_camera.h>
 #include <uc/gx/lip/lip.h>
+#include <uc/gx/lip_utils.h>
 #include "uwp/file.h"
 
 
@@ -58,10 +59,34 @@ namespace uc
 			auto indices	= static_cast<uint32_t>(align(size(mesh->m_indices), 256UL));
 
 			gpu_resource_create_context* rc = m_resources.resource_create_context();
-			auto s			= static_cast<uint32_t > (pos + uv + normals + tangents + indices);
-			m_geometry		= gx::dx12::create_byteaddress_buffer(rc, s, D3D12_RESOURCE_STATE_COPY_DEST);
 
-			gx::dx12::managed_copy_command_context ctx = create_copy_command_context(m_resources.compute_command_context_allocator());
+			gx::dx12::managed_graphics_command_context ctx = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
+
+			m_mesh_opaque.m_opaque_textures.resize(mesh->m_textures.size());
+			m_mesh_opaque.m_opaque_ranges.resize(mesh->m_primitive_ranges.size());
+
+			for (auto i = 0U; i < mesh->m_textures.size(); ++i)
+			{
+				const auto& texture = mesh->m_textures[i];
+
+				auto w = texture.m_levels[0].m_width;
+				auto h = texture.m_levels[0].m_height;
+
+				m_mesh_opaque.m_opaque_textures[i]	 = gx::dx12::create_texture_2d(rc, w, h, static_cast<DXGI_FORMAT>(texture.m_levels[0].view()), D3D12_RESOURCE_STATE_COPY_DEST);
+				D3D12_SUBRESOURCE_DATA s[1];
+				s[0] = gx::sub_resource_data(&texture.m_levels[0]);
+				ctx->upload_resource(m_mesh_opaque.m_opaque_textures[i].get(), 0, 1, &s[0]);
+			}
+
+			for (auto i = 0U; i < mesh->m_primitive_ranges.size(); ++i)
+			{
+				const auto& r = mesh->m_primitive_ranges[i];
+				m_mesh_opaque.m_opaque_ranges[i].m_begin = r.m_begin;
+				m_mesh_opaque.m_opaque_ranges[i].m_end	 = r.m_end;
+			}
+
+			auto s					= static_cast<uint32_t > (pos + uv + normals + tangents + indices);
+			m_geometry				= gx::dx12::create_byteaddress_buffer(rc, s, D3D12_RESOURCE_STATE_COPY_DEST);
 
 			//allocation
 			m_mesh.m_pos			= 0;
@@ -79,6 +104,11 @@ namespace uc
 			ctx->upload_buffer(m_geometry.get(), m_mesh.m_indices,	mesh->m_indices.data(),		size(mesh->m_indices));
 
 			ctx->transition_resource(m_geometry.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+
+			for (auto&& t : m_mesh_opaque.m_opaque_textures)
+			{
+				ctx->transition_resource(t.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			}
 
 			ctx->submit();
 
@@ -205,10 +235,9 @@ namespace uc
 			//
 			pinhole_camera camera;
 
-
 			camera.set_view_position(math::point3(0, 0, -5));
 
-			pinhole_camera_helper::set_look_at(&camera, math::point3(0, 0, -10), math::vector3(0, 0, 10), math::vector3(0, 1, 0));
+			pinhole_camera_helper::set_look_at(&camera, math::point3(0, 0, 5), math::vector3(0, 0, -5), math::vector3(0, 1, 0));
 
 			auto perspective = perspective_matrix(camera);
 			auto view		 = view_matrix(camera);
@@ -225,57 +254,71 @@ namespace uc
 			graphics->clear(depth_buffer);
 
 			graphics->set_render_target(depth_buffer);
-			graphics->set_pso(m_solid_graphics_depth);
 			graphics->set_descriptor_heaps();
+
 
 			graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
 			graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
 			graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-			graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
-
+			
+			//depth
 			{
-				auto m = transpose(world);
-				graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+				graphics->set_pso(m_solid_graphics_depth);
+				graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+
+				{
+					auto m = transpose(world);
+					graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+				}
+
+				graphics->set_graphics_constant_buffer(1, f);
+				graphics->set_graphics_srv_buffer(2, m_geometry.get());
+
+				graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+				graphics->draw_indexed(m_mesh.m_indices_size / 4);
 			}
 
-			graphics->set_graphics_constant_buffer(1, f);
-			graphics->set_graphics_srv_buffer(2, m_geometry.get());
-
-			graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
-			graphics->draw_indexed(m_mesh.m_indices_size / 4);
-
-
-
-			graphics->set_render_target(back_buffer, depth_buffer);
-			graphics->set_pso(m_solid_graphics);
-			
-			graphics->set_graphics_root_constant(0, 1					, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t) );
-			graphics->set_graphics_root_constant(0, 0					, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, m_mesh.m_pos		, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, m_mesh.m_uv			, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, m_mesh.m_normals	, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
-			graphics->set_graphics_root_constant(0, m_mesh.m_tangents	, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
-
+			graphics->transition_resource(depth_buffer, D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_DEPTH_READ);
+			//opaque
 			{
-				auto m = transpose(world);
-				graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t) );
-			}
-			
-			graphics->set_graphics_constant_buffer(1, f);
-			graphics->set_graphics_srv_buffer(2, m_geometry.get());
+				graphics->set_render_target(back_buffer, depth_buffer);
+				graphics->set_pso(m_solid_graphics);
 
-			graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
-			graphics->draw_indexed(m_mesh.m_indices_size / 4);
+
+				graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
+				graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
+				graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+				graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
+				graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+
+				{
+					auto m = transpose(world);
+					graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+				}
+
+				graphics->set_graphics_constant_buffer(1, f);
+				graphics->set_graphics_srv_buffer(2, m_geometry.get());
+
+				graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+
+				for (auto i = 0U; i < m_mesh_opaque.m_opaque_textures.size(); ++i)
+				{
+					graphics->set_graphics_dynamic_descriptor(4, m_mesh_opaque.m_opaque_textures[i]->srv());
+					graphics->draw_indexed(m_mesh_opaque.m_opaque_ranges[i].index_count(), m_mesh_opaque.m_opaque_ranges[i].m_begin);
+				}
+			}
 
 			graphics->transition_resource(back_buffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-
 
             //if we did upload through the pci bus, insert waits
             m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.upload_queue()->flush());

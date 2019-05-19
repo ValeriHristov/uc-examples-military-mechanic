@@ -42,31 +42,12 @@ float2 load_uv(uint v)
 [RootSignature( MyRS1 ) ]
 interpolants main(uint v : SV_VERTEXID)
 {
-
     interpolants r = (interpolants)0;
 
     uint positionStride = 16;
     uint colorStride    = 12;
     uint positionOffset = 0;
     uint colorOffset    = 16 * 3;
-
-    if ( v %3 == 0)
-    {
-        r.position = float4(-1,-1,0.5,1.0f);
-        r.uv = 0.0;
-    }
-
-	if (v%3 == 1)
-    {
-        r.position =float4(-1,1,0.5,1.0f);
-        r.uv = float2(1.0, 0.0);
-    }
-
-    if (v%3 == 2)
-    {
-        r.position =float4(1,1,0.5,1.0f);
-        r.uv = float2(0.0, 1.0);
-    }
 
     input i;
 
@@ -79,13 +60,8 @@ interpolants main(uint v : SV_VERTEXID)
     
     r.uv                    = i.uv;
     r.position              = project_p_os(position_os, world, m_frame.m_view, m_frame.m_perspective).m_value;
-
-	
-
-	//r.position = float4(position_os, 1.0f);
-
     return r;
-	
+    
 }
 
 

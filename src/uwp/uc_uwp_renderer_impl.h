@@ -71,7 +71,21 @@ namespace uc
 				uint32_t			m_vertex_count;
 			};
 
-            device_resources                                                                    m_resources;
+			struct gpu_primitive_range
+			{
+				uint32_t m_begin;
+				uint32_t m_end;
+
+				uint32_t index_count() const { return m_end - m_begin; }
+			};
+
+			struct gpu_mesh_opaque
+			{
+				std::vector<gx::dx12::managed_gpu_texture_2d>	m_opaque_textures;
+				std::vector< gpu_primitive_range >				m_opaque_ranges;
+			};
+
+			device_resources                                                                    m_resources;
 
             uint32_t                                                                            m_frame_index = 2;
 
@@ -84,11 +98,13 @@ namespace uc
             winrt::Windows::Graphics::Display::DisplayInformation                               m_display_information = nullptr;
 			
 			gx::dx12::managed_byteaddress_gpu_buffer											m_geometry;
+
 			gpu_mesh																			m_mesh;
+			gpu_mesh_opaque																		m_mesh_opaque;
+			
 
             io::pad                                                                             m_pad;
             io::pad_state                                                                       m_pad_state;
-
 
             io::mouse                                                                           m_mouse;
             io::mouse_state                                                                     m_mouse_state;

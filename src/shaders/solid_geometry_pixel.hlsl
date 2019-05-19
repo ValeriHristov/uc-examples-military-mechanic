@@ -27,11 +27,11 @@ Texture2D<float4> t         : register(t1);
 [RootSignature( MyRS1 ) ]
 float4 main( interpolants r ) : SV_Target0
 {
-    return checker_board(r.uv);
+//    return checker_board(r.uv);
 
     //float2 te = float2(r.uv.x, 1- r.uv.y);
-    //float2 te = float2(r.uv.x, r.uv.y);
-    //return t.Sample(g_linear_clamp , te);
+    float2 te = float2(r.uv.x, r.uv.y);
+    return t.Sample(g_linear_clamp , te);
 
     //return float4(1.0f, 0.0f, 0.0f, 1.0f);
 }
