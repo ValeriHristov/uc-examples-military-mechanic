@@ -107,6 +107,7 @@ namespace uc
 
             void    create_d3d_12();
 
+			Microsoft::WRL::ComPtr<ID3D12Debug1>										m_debug;
             Microsoft::WRL::ComPtr<ID3D12Device>                                        m_device;
             std::unique_ptr<gx::dx12::gpu_resource_create_context>                      m_resource_creator;
             std::unique_ptr<gx::dx12::gpu_command_queue>                                m_copy_queue;

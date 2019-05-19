@@ -5,17 +5,12 @@
 
 #include "uwp/uc_uwp_renderer.h"
 
-#define UWP
-#include <uc/gx/lip/lip.h>
-#include "uwp/file.h"
-
 using namespace winrt::Windows::ApplicationModel;
 using namespace winrt::Windows::ApplicationModel::Core;
 using namespace winrt::Windows::ApplicationModel::Activation;
 using namespace winrt::Windows::UI::Core;
 using namespace winrt::Windows::UI::ViewManagement;
 using namespace winrt::Windows::Graphics::Display;
-
 
 class ViewProvider : public winrt::implements<ViewProvider, IFrameworkView, IFrameworkViewSource>
 {
@@ -87,8 +82,6 @@ public:
 
     virtual void Load( winrt::hstring)
     {
-		using namespace uc;
-		auto mesh = lip::create_from_compressed_lip_file<lip::derivatives_skinned_model>(L"appdata/models/military_mechanic.derivatives_skinned_model.model");
 
 	}
 

@@ -38,20 +38,17 @@ namespace uc
             //adapters = get_warp_adapters();
             adapters = get_adapters();
 
-#if defined(_DEBUG)
+//#if defined(_DEBUG)
             {
                 auto hresult = D3D12GetDebugInterface(IID_PPV_ARGS(&m_debug));
 
                 if (hresult == S_OK)
                 {
                     m_debug->EnableDebugLayer();
-                    if (!IsNvidia(adapters[0].Get()))
-                    {
-                        m_debug->SetEnableGPUBasedValidation(TRUE);
-                    }
+					m_debug->SetEnableGPUBasedValidation(TRUE);
                 }
             }
-#endif
+//#endif
             m_device = create_device_always(adapters[0].Get());                    //put here if you have other adapters to test
       
             

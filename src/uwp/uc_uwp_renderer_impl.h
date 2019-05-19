@@ -20,6 +20,13 @@
 
 #include <uc/gx/geo/geometry_allocator.h>
 
+
+#include <solid_graphics.h>
+#include <solid_graphics_depth.h>
+
+#include <shaders/interop.h>
+
+
 struct ISwapChainPanelNative;
 
 namespace uc
@@ -53,18 +60,31 @@ namespace uc
 
         private:
 
+			struct gpu_mesh
+			{
+				interop::offset		m_pos;
+				interop::offset		m_uv;
+				interop::offset		m_normals;
+				interop::offset		m_tangents;
+				interop::offset		m_indices;
+				uint32_t			m_indices_size;
+				uint32_t			m_vertex_count;
+			};
+
             device_resources                                                                    m_resources;
 
             uint32_t                                                                            m_frame_index = 2;
+
             std::unique_ptr<gx::dx12::gpu_frame_depth_buffer>                                   m_frame_depth_buffer[3];
             std::unique_ptr<gx::dx12::gpu_frame_msaa_depth_buffer>                              m_frame_shadow_buffer[3];
             std::unique_ptr<gx::dx12::gpu_frame_color_buffer>                                   m_frame_shadow_map[3];
 
-            std::unique_ptr<gx::geo::geometry_allocator>                                        m_geometry_allocator;
-
             window_environment                                                                  m_window_enviroment;
             winrt::Windows::UI::Core::CoreWindow                                                m_window = nullptr;
             winrt::Windows::Graphics::Display::DisplayInformation                               m_display_information = nullptr;
+			
+			gx::dx12::managed_byteaddress_gpu_buffer											m_geometry;
+			gpu_mesh																			m_mesh;
 
             io::pad                                                                             m_pad;
             io::pad_state                                                                       m_pad_state;
@@ -75,6 +95,8 @@ namespace uc
             io::keyboard                                                                        m_keyboard;
             io::keyboard_state                                                                  m_keyboard_state;
 
+			gx::dx12::solid_graphics::graphics_pipeline_state*									m_solid_graphics		= nullptr;
+			gx::dx12::solid_graphics_depth::graphics_pipeline_state*							m_solid_graphics_depth	= nullptr;
 
             float                                                                               m_scale_render = 1.0f;
 

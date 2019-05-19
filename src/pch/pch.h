@@ -31,5 +31,8 @@
 #include <winrt/Windows.Graphics.Display.h>
 #include <winrt/Windows.UI.Core.h>
 #include <winrt/Windows.UI.ViewManagement.h>
+#include <winrt/windows.UI.Xaml.h>
+#include <winrt/windows.UI.Xaml.controls.h>
+
 
 
