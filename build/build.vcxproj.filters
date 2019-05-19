@@ -103,5 +103,10 @@
     <None Include="$(MSBuildThisFileDirectory)\..\..\lib\native\skeletons\military_mechanic.skeleton" />
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\*.dll" />
   </ItemGroup>
 </Project>
