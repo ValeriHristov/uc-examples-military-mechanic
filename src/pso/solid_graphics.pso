@@ -1,0 +1,16 @@
+import geometry
+
+PipelineStateObject textured_solid_graphics : solid_geometry =
+{
+    .VertexShader           = textured_vertex
+    .PixelShader            = textured_pixel
+}
+
+PipelineStateObject solid_graphics  : solid_geometry =
+{
+    .VertexShader           = solid_geometry_uv
+    .PixelShader            = solid_geometry_pixel
+}
+
+
+

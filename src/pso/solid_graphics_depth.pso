@@ -1,0 +1,9 @@
+import geometry
+
+PipelineStateObject solid_graphics_depth  : depth_only_geometry =
+{
+    .VertexShader           = solid_geometry_depth
+}
+
+
+
