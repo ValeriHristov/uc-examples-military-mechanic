@@ -51,7 +51,7 @@ namespace uc
         {
             using namespace gx::dx12;
 
-			auto mesh		= lip::create_from_compressed_lip_file<lip::derivatives_skinned_model>(L"appdata/models/military_mechanic.derivatives_skinned_model.model");
+			auto mesh		= lip::create_from_compressed_lip_file<lip::derivatives_skinned_model>(L"Assets\\models\\military_mechanic.derivatives_skinned_model.model");
 			auto pos		= static_cast<uint32_t>(align(size(mesh->m_positions), 256U));
 			auto uv			= static_cast<uint32_t>(align(size(mesh->m_uv), 256U));
 			auto normals	= static_cast<uint32_t>(align(size(mesh->m_normals), 256UL));
