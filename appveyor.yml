@@ -1,11 +1,10 @@
 version: 1.0.{build}
 image: Visual Studio 2019
-clone_folder: c:\projects
+clone_folder: c:\projects-ism56xd7kq0fxruh
 install:
-  - cd c:\projects
-  - git submodule update --init --recursive
+  - cd c:\projects-ism56xd7kq0fxruh
 build_script:
 - cmd: >-
-    nuget restore c:\projects\build\build.sln
+    nuget restore c:\projects\build-ism56xd7kq0fxruh\build.sln
 
     msbuild c:\projects\build\build.sln /p:Configuration="Release" /p:AppxPackageSigningEnabled=false /verbosity:quiet
