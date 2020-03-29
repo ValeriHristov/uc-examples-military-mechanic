@@ -5,6 +5,6 @@ install:
   - cd c:\projects-ism56xd7kq0fxruh
 build_script:
 - cmd: >-
-    nuget restore c:\projects\build-ism56xd7kq0fxruh\build.sln
+    nuget restore c:\projects-ism56xd7kq0fxruh\build\build.sln
 
     msbuild c:\projects\build\build.sln /p:Configuration="Release" /p:AppxPackageSigningEnabled=false /verbosity:quiet
