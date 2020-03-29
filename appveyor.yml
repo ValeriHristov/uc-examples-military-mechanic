@@ -7,4 +7,4 @@ build_script:
 - cmd: >-
     nuget restore c:\projects-ism56xd7kq0fxruh\build\build.sln
 
-    msbuild c:\projects\build\build.sln /p:Configuration="Release" /p:AppxPackageSigningEnabled=false /verbosity:quiet
+    msbuild c:\projects-ism56xd7kq0fxruh\build\build.sln /p:Configuration="Release" /p:AppxPackageSigningEnabled=false /verbosity:quiet
