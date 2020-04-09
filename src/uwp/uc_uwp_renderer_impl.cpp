@@ -41,13 +41,10 @@ namespace uc
 
         struct skinned_draw_constants
         {
-            math::float4x4                  m_world;
             std::array<math::float4x4, 127> m_joints_palette;
 
             skinned_draw_constants()
             {
-                m_world = math::identity_matrix();
-
                 for (auto&& i : m_joints_palette)
                 {
                     i = math::identity_matrix();
@@ -259,7 +256,6 @@ namespace uc
 
             {
                 skinned_draw_constants& draw = m_constants_pass;
-                draw.m_world = uc::math::transpose(*m_military_mechanic_transform);
 
                 {
                     auto skeleton = m_military_mechanic_skeleton.get();
