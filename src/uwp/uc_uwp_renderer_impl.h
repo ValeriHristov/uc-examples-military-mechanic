@@ -4,6 +4,7 @@
 #include <winrt/windows.ui.xaml.h>
 #include <winrt/windows.ui.xaml.controls.h>
 
+#include <uc/sys/profile_timer.h>
 #include <uc/lip/lip.h>
 #include <uc/gx/lip/animation.h>
 
@@ -140,6 +141,7 @@ namespace uc
 
             std::unique_ptr< gx::anm::skeleton_instance >                                       m_skeleton_instance;
             std::unique_ptr< gx::anm::animation_instance>                                       m_animation_instance;
+
 
             //update state
             math::managed_float4x4                                                              m_military_mechanic_transform = math::make_float4x4();

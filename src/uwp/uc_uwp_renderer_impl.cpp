@@ -16,6 +16,7 @@
 #include <uc/gx/lip_utils.h>
 
 #include "animation_instance.h"
+#include "transforms.h"
 
 #include "uwp/file.h"
 
@@ -37,6 +38,22 @@ namespace uc
         using namespace winrt::Windows::UI::Core;
         using namespace winrt::Windows::UI::ViewManagement;
         using namespace winrt::Windows::Graphics::Display;
+
+        struct skinned_draw_constants
+        {
+            math::float4x4                  m_world;
+            std::array<math::float4x4, 127> m_joints_palette;
+
+            skinned_draw_constants()
+            {
+                m_world = math::identity_matrix();
+
+                for (auto&& i : m_joints_palette)
+                {
+                    i = math::identity_matrix();
+                }
+            }
+        };
 
         renderer_impl::renderer_impl( bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information) : m_main_window(window_close)
         {
@@ -126,8 +143,6 @@ namespace uc
                 m_solid_graphics_depth = gx::dx12::solid_graphics_depth::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
             });
 
-
-
             //load preprocessed textured model
             g.run([this]()
             {
@@ -140,6 +155,10 @@ namespace uc
             {
                 m_military_mechanic_animations = lip::create_from_compressed_lip_file<lip::joint_animations>(L"Assets\\animations\\military_mechanic.animation");
             });
+
+            g.wait();
+
+            m_animation_instance = std::make_unique<gx::anm::animation_instance>(m_military_mechanic_animations.get(), m_military_mechanic_skeleton.get());
         }
 
         static inline uint64_t next_frame(uint64_t frame)
@@ -229,6 +248,32 @@ namespace uc
             using namespace gx::dx12;
 
             concurrency::task_group g;
+
+            m_frame_time = m_frame_timer.seconds();
+            m_frame_timer.reset();
+
+            m_skeleton_instance->reset();
+            m_animation_instance->accumulate(m_skeleton_instance.get(), m_frame_time);
+
+            skinned_draw_constants m_constants_pass;
+
+            {
+                skinned_draw_constants& draw = m_constants_pass;
+                draw.m_world = uc::math::transpose(*m_military_mechanic_transform);
+
+                {
+                    auto skeleton = m_military_mechanic_skeleton.get();
+                    auto joints = gx::anm::local_to_world_joints2(skeleton, m_skeleton_instance->local_transforms());
+
+                    //todo: avx2
+                    for (auto i = 0U; i < joints.size(); ++i)
+                    {
+                        math::float4x4 bind_pose    = math::load44(&skeleton->m_joint_inverse_bind_pose2[i].m_a0);
+                        math::float4x4 palette      = math::mul(bind_pose, joints[i]);
+                        draw.m_joints_palette[i]    = math::transpose(palette);
+                    }
+                }
+            }
 
             //flush all uploaded resources previous frame
             //make sure the gpu waits for the newly uploaded resources if any
