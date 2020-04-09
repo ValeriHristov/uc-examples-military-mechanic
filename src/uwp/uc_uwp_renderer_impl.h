@@ -4,6 +4,9 @@
 #include <winrt/windows.ui.xaml.h>
 #include <winrt/windows.ui.xaml.controls.h>
 
+#include <uc/lip/lip.h>
+#include <uc/gx/lip/animation.h>
+
 #include <uc/gx/dx12/dx12.h>
 #include <uc/sys/profile_timer.h>
 
@@ -15,22 +18,30 @@
 #include <uc/io/mouse.h>
 #include <uc/io/keyboard.h>
 
+#include <solid_graphics.h>
+#include <solid_graphics_depth.h>
+#include <shaders/interop.h>
+
+
 #include "uc_uwp_device_resources.h"
 #include "uc_uwp_renderer_impl_command.h"
 
-#include <uc/gx/geo/geometry_allocator.h>
-
-
-#include <solid_graphics.h>
-#include <solid_graphics_depth.h>
-
-#include <shaders/interop.h>
-
+#include "skeleton_instance.h"
+#include "animation_instance.h"
 
 struct ISwapChainPanelNative;
 
 namespace uc
 {
+    namespace gx
+    {
+        namespace anm
+        {
+            class skeleton_instance;
+            class animation_instance;
+        }
+    }
+
     namespace uwp
     {
         class renderer_impl : public util::noncopyable
@@ -60,32 +71,32 @@ namespace uc
 
         private:
 
-			struct gpu_mesh
-			{
-				interop::offset		m_pos;
-				interop::offset		m_uv;
-				interop::offset		m_normals;
-				interop::offset		m_tangents;
-				interop::offset		m_indices;
-				uint32_t			m_indices_size;
-				uint32_t			m_vertex_count;
-			};
+            struct gpu_mesh
+            {
+                interop::offset		m_pos;
+                interop::offset		m_uv;
+                interop::offset		m_normals;
+                interop::offset		m_tangents;
+                interop::offset		m_indices;
+                uint32_t			m_indices_size;
+                uint32_t			m_vertex_count;
+            };
 
-			struct gpu_primitive_range
-			{
-				uint32_t m_begin;
-				uint32_t m_end;
+            struct gpu_primitive_range
+            {
+                uint32_t m_begin;
+                uint32_t m_end;
 
-				uint32_t index_count() const { return m_end - m_begin; }
-			};
+                uint32_t index_count() const { return m_end - m_begin; }
+            };
 
-			struct gpu_mesh_opaque
-			{
-				std::vector<gx::dx12::managed_gpu_texture_2d>	m_opaque_textures;
-				std::vector< gpu_primitive_range >				m_opaque_ranges;
-			};
+            struct gpu_mesh_opaque
+            {
+                std::vector<gx::dx12::managed_gpu_texture_2d>	m_opaque_textures;
+                std::vector< gpu_primitive_range >				m_opaque_ranges;
+            };
 
-			device_resources                                                                    m_resources;
+            device_resources                                                                    m_resources;
 
             uint32_t                                                                            m_frame_index = 2;
 
@@ -96,12 +107,12 @@ namespace uc
             window_environment                                                                  m_window_enviroment;
             winrt::Windows::UI::Core::CoreWindow                                                m_window = nullptr;
             winrt::Windows::Graphics::Display::DisplayInformation                               m_display_information = nullptr;
-			
-			gx::dx12::managed_byteaddress_gpu_buffer											m_geometry;
+            
+            gx::dx12::managed_byteaddress_gpu_buffer                                            m_geometry;
 
-			gpu_mesh																			m_mesh;
-			gpu_mesh_opaque																		m_mesh_opaque;
-			
+            gpu_mesh                                                                            m_mesh;
+            gpu_mesh_opaque                                                                     m_mesh_opaque;
+            
 
             io::pad                                                                             m_pad;
             io::pad_state                                                                       m_pad_state;
@@ -111,8 +122,8 @@ namespace uc
             io::keyboard                                                                        m_keyboard;
             io::keyboard_state                                                                  m_keyboard_state;
 
-			gx::dx12::solid_graphics::graphics_pipeline_state*									m_solid_graphics		= nullptr;
-			gx::dx12::solid_graphics_depth::graphics_pipeline_state*							m_solid_graphics_depth	= nullptr;
+            gx::dx12::solid_graphics::graphics_pipeline_state*									m_solid_graphics		= nullptr;
+            gx::dx12::solid_graphics_depth::graphics_pipeline_state*							m_solid_graphics_depth	= nullptr;
 
             float                                                                               m_scale_render = 1.0f;
 
@@ -122,6 +133,17 @@ namespace uc
             bool*                                                                               m_main_window;
             Concurrency::concurrent_queue < resize_window_command >                             m_prerender_queue;
             void                                                                                flush_prerender_queue();
+
+
+            lip::unique_lip_pointer<lip::skeleton>                                              m_military_mechanic_skeleton;
+            lip::unique_lip_pointer<lip::joint_animations>                                      m_military_mechanic_animations;
+
+            std::unique_ptr< gx::anm::skeleton_instance >                                       m_skeleton_instance;
+            std::unique_ptr< gx::anm::animation_instance>                                       m_animation_instance;
+
+            //update state
+            math::managed_float4x4                                                              m_military_mechanic_transform = math::make_float4x4();
+
         };
     }
 
