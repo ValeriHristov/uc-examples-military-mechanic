@@ -10,21 +10,14 @@
 #include "uc_uwp_ui_helper.h"
 
 #define UWP
+
 #include <uc/gx/pinhole_camera.h>
 #include <uc/gx/lip/lip.h>
 #include <uc/gx/lip_utils.h>
+
+#include "animation_instance.h"
+
 #include "uwp/file.h"
-
-
-
-
-
-using namespace winrt::Windows::ApplicationModel;
-using namespace winrt::Windows::ApplicationModel::Core;
-using namespace winrt::Windows::ApplicationModel::Activation;
-using namespace winrt::Windows::UI::Core;
-using namespace winrt::Windows::UI::ViewManagement;
-using namespace winrt::Windows::Graphics::Display;
 
 namespace
 {
@@ -38,6 +31,13 @@ namespace uc
 {
     namespace uwp
     {
+		using namespace winrt::Windows::ApplicationModel;
+		using namespace winrt::Windows::ApplicationModel::Core;
+		using namespace winrt::Windows::ApplicationModel::Activation;
+		using namespace winrt::Windows::UI::Core;
+		using namespace winrt::Windows::UI::ViewManagement;
+		using namespace winrt::Windows::Graphics::Display;
+
         renderer_impl::renderer_impl( bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information) : m_main_window(window_close)
         {
             set_window(window);

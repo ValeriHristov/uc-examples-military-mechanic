@@ -200,8 +200,6 @@ namespace uc
 
                 if (m_swap_chain)
                 {
-
-
                     m_back_buffers[0].reset();
                     m_back_buffers[1].reset();
                     m_back_buffers[2].reset();
@@ -252,14 +250,12 @@ namespace uc
                     gx::dx12::throw_if_failed(m_swap_chain->GetBuffer(1, IID_PPV_ARGS(&back_buffer[1])));
                     gx::dx12::throw_if_failed(m_swap_chain->GetBuffer(2, IID_PPV_ARGS(&back_buffer[2])));
 
-                 
 
                     //when you resize the buffers, buffer0 maps to the current frame, buffer1 next, and buffer2 next
                     m_back_buffers[frame0] = std::unique_ptr<gx::dx12::gpu_back_buffer>(resource_creator->create_back_buffer(back_buffer[0].Get()));
                     m_back_buffers[frame1] = std::unique_ptr<gx::dx12::gpu_back_buffer>(resource_creator->create_back_buffer(back_buffer[1].Get()));
                     m_back_buffers[frame2] = std::unique_ptr<gx::dx12::gpu_back_buffer>(resource_creator->create_back_buffer(back_buffer[2].Get()));
                 }
-
             }
 
             void resources::wait_for_gpu()

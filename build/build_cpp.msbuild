@@ -6,6 +6,10 @@
 </ItemGroup>
 <ItemGroup>	
 <ClCompile Include = "..\src\main.cpp" />	
+<ClCompile Include = "..\src\uwp\animation_instance.cpp" />	
+<ClCompile Include = "..\src\uwp\skeleton_animation_map.cpp" />	
+<ClCompile Include = "..\src\uwp\skeleton_instance.cpp" />	
+<ClCompile Include = "..\src\uwp\transforms.cpp" />	
 <ClCompile Include = "..\src\uwp\uc_uwp_device_resources.cpp" />	
 <ClCompile Include = "..\src\uwp\uc_uwp_device_swap_chain_resources.cpp" />	
 <ClCompile Include = "..\src\uwp\uc_uwp_gx_render_context.cpp" />	

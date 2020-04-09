@@ -4,9 +4,15 @@
 <ItemGroup>	
 <ClInclude Include = "..\src\pch\pch.h"/>	
 <ClInclude Include = "..\src\pch\targetver.h"/>	
+<ClInclude Include = "..\src\shaders\interop.h"/>	
+<ClInclude Include = "..\src\uwp\animation_instance.h"/>	
+<ClInclude Include = "..\src\uwp\anm.h"/>	
 <ClInclude Include = "..\src\uwp\file.h"/>	
 <ClInclude Include = "..\src\uwp\loader.h"/>	
 <ClInclude Include = "..\src\uwp\lzham_compressor.h"/>	
+<ClInclude Include = "..\src\uwp\skeleton_animation_map.h"/>	
+<ClInclude Include = "..\src\uwp\skeleton_instance.h"/>	
+<ClInclude Include = "..\src\uwp\transforms.h"/>	
 <ClInclude Include = "..\src\uwp\uc_uwp_device_resources.h"/>	
 <ClInclude Include = "..\src\uwp\uc_uwp_device_swap_chain_resources.h"/>	
 <ClInclude Include = "..\src\uwp\uc_uwp_gx_render_context.h"/>	
