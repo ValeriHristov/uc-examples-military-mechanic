@@ -18,6 +18,7 @@ PipelineStateObject solid_geometry =
 
 PipelineStateObject depth_only_geometry : solid_geometry = 
 {
+    .RootSignature          = default_depth_signature
     .DepthStencilState      = prepass
     .RTVFormats             = { }
 }

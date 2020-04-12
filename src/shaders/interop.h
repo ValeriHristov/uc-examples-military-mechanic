@@ -27,8 +27,8 @@ namespace interop
         offset                 m_batch;
         offset                 m_start_vertex;
 
-		offset                 m_pad0;
-		offset                 m_pad1;
+        offset                 m_pad0;
+        offset                 m_pad1;
 
         offset                 m_position;
         offset                 m_uv;
@@ -37,6 +37,11 @@ namespace interop
         offset                 m_tangent;
 
         euclidean_transform_3d m_world;
+    };
+
+    struct skinned_draw_constants
+    {
+        float4x4 m_joints_palette[127];
     };
 }
 

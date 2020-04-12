@@ -252,10 +252,10 @@ namespace uc
             m_skeleton_instance->reset();
             m_animation_instance->accumulate(m_skeleton_instance.get(), m_frame_time);
 
-            skinned_draw_constants m_constants_pass;
+            interop::skinned_draw_constants m_constants_pass;
 
             {
-                skinned_draw_constants& draw = m_constants_pass;
+                interop::skinned_draw_constants& draw = m_constants_pass;
 
                 {
                     auto skeleton = m_military_mechanic_skeleton.get();

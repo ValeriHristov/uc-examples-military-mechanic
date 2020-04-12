@@ -15,6 +15,10 @@
         <EntryPointName>MyRS1</EntryPointName>
     </RootSignature>
 
+    <RootSignature Include = "..\src\shaders\default_depth_signature.hlsl">
+        <EntryPointName>MyRS1</EntryPointName>
+    </RootSignature>
+
 </ItemGroup>
 
 
