@@ -3,9 +3,9 @@
 
 <ItemGroup> 
     <PixelShader Include  = "..\src\shaders\pixel_shader.hlsl"></PixelShader>
-    <VertexShader Include = "..\src\shaders\solid_geometry_uv.hlsl"></VertexShader>
-    <PixelShader Include  = "..\src\shaders\solid_geometry_pixel.hlsl"></PixelShader>
-    <VertexShader Include = "..\src\shaders\solid_geometry_depth.hlsl"></VertexShader>
+    <VertexShader Include = "..\src\shaders\soldier_geometry_uv.hlsl"></VertexShader>
+    <PixelShader Include  = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
+    <VertexShader Include = "..\src\shaders\soldier_geometry_depth.hlsl"></VertexShader>
 
     <RootSignature Include = "..\src\shaders\default_compute_signature.hlsl">
         <EntryPointName>MyRS2</EntryPointName>

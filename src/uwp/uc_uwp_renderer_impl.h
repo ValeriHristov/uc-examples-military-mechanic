@@ -19,8 +19,8 @@
 #include <uc/io/mouse.h>
 #include <uc/io/keyboard.h>
 
-#include <solid_graphics.h>
-#include <solid_graphics_depth.h>
+#include <soldier_graphics.h>
+#include <soldier_graphics_depth.h>
 #include <shaders/interop.h>
 
 
@@ -123,8 +123,8 @@ namespace uc
             io::keyboard                                                                        m_keyboard;
             io::keyboard_state                                                                  m_keyboard_state;
 
-            gx::dx12::solid_graphics::graphics_pipeline_state*									m_solid_graphics		= nullptr;
-            gx::dx12::solid_graphics_depth::graphics_pipeline_state*							m_solid_graphics_depth	= nullptr;
+            gx::dx12::soldier_graphics::graphics_pipeline_state*								m_soldier       		= nullptr;
+            gx::dx12::soldier_graphics_depth::graphics_pipeline_state*							m_soldier_depth	        = nullptr;
 
             float                                                                               m_scale_render = 1.0f;
 

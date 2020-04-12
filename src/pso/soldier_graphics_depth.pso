@@ -1,0 +1,9 @@
+import geometry
+
+PipelineStateObject soldier_graphics_depth  : depth_only_geometry =
+{
+    .VertexShader           = soldier_geometry_depth
+}
+
+
+

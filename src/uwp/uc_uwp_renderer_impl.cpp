@@ -136,8 +136,8 @@ namespace uc
 
                 m_resources.wait_for_gpu();
 
-                m_solid_graphics = gx::dx12::solid_graphics::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
-                m_solid_graphics_depth = gx::dx12::solid_graphics_depth::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+                m_soldier          = gx::dx12::soldier_graphics::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+                m_soldier_depth    = gx::dx12::soldier_graphics_depth::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
             });
 
             //load preprocessed textured model
@@ -321,7 +321,7 @@ namespace uc
 
             //depth
             {
-                graphics->set_pso(m_solid_graphics_depth);
+                graphics->set_pso(m_soldier_depth);
                 graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
                 graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
                 graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
@@ -345,7 +345,7 @@ namespace uc
             //opaque
             {
                 graphics->set_render_target(back_buffer, depth_buffer);
-                graphics->set_pso(m_solid_graphics);
+                graphics->set_pso(m_soldier);
 
                 graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
                 graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });

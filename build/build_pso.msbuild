@@ -2,8 +2,8 @@
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"> 
 
 <ItemGroup> 
-   <GraphicsPipelineStateObject Include = "..\src\pso\solid_graphics.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>solid_graphics</EntryPointName></GraphicsPipelineStateObject>    
-   <GraphicsPipelineStateObject Include = "..\src\pso\solid_graphics_depth.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>solid_graphics_depth</EntryPointName></GraphicsPipelineStateObject>    
+   <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics</EntryPointName></GraphicsPipelineStateObject>    
+   <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics_depth.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics_depth</EntryPointName></GraphicsPipelineStateObject>    
 </ItemGroup>
 
 </Project> 
