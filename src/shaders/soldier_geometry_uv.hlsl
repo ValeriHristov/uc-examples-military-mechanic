@@ -22,6 +22,11 @@ cbuffer per_draw_call : register(b0)
     interop::draw_call m_draw_call;
 };
 
+cbuffer per_draw_call_additional    : register(b2)
+{
+    interop::skinned_draw_constants  m_draw_constants;
+};
+
 static const uint position_stride = 12;
 static const uint normal_stride   = 12;
 static const uint tangent_stride  = 12;

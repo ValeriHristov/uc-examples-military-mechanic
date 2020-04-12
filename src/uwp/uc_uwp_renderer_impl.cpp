@@ -69,12 +69,18 @@ namespace uc
             {
                 using namespace gx::dx12;
 
-                auto mesh = lip::create_from_compressed_lip_file<lip::derivatives_skinned_model>(L"Assets\\models\\military_mechanic.derivatives_skinned_model.model");
-                auto pos = static_cast<uint32_t>(align(size(mesh->m_positions), 256U));
-                auto uv = static_cast<uint32_t>(align(size(mesh->m_uv), 256U));
-                auto normals = static_cast<uint32_t>(align(size(mesh->m_normals), 256UL));
-                auto tangents = static_cast<uint32_t>(align(size(mesh->m_tangents), 256UL));
-                auto indices = static_cast<uint32_t>(align(size(mesh->m_indices), 256UL));
+                const auto mesh         = lip::create_from_compressed_lip_file<lip::derivatives_skinned_model>(L"Assets\\models\\military_mechanic.derivatives_skinned_model.model");
+                const auto pos          = static_cast<uint32_t>(align(size(mesh->m_positions),  256U));
+                const auto uv           = static_cast<uint32_t>(align(size(mesh->m_uv),         256U));
+                const auto normals      = static_cast<uint32_t>(align(size(mesh->m_normals),    256UL));
+                const auto tangents     = static_cast<uint32_t>(align(size(mesh->m_tangents),   256UL));
+                const auto indices      = static_cast<uint32_t>(align(size(mesh->m_indices),    256UL));
+                const auto blend_weight_size = mesh->m_blend_weights.size() * sizeof(lip::float4);
+                const auto blend_indices_size = mesh->m_blend_weights.size() * sizeof(lip::ubyte4);
+
+                const auto blend_weights      = static_cast<uint32_t>(align(blend_weight_size, 256UL) );
+                const auto blend_indices      = static_cast<uint32_t>(align(blend_indices_size, 256UL));
+                
 
                 gpu_resource_create_context* rc = m_resources.resource_create_context();
 
@@ -103,22 +109,26 @@ namespace uc
                     m_mesh_opaque.m_opaque_ranges[i].m_end = r.m_end;
                 }
 
-                auto s = static_cast<uint32_t> (pos + uv + normals + tangents + indices);
+                auto s = static_cast<uint32_t> (pos + uv + normals + tangents + blend_weights + blend_indices +  indices);
                 m_geometry = gx::dx12::create_byteaddress_buffer(rc, s, D3D12_RESOURCE_STATE_COPY_DEST);
 
                 //allocation
-                m_mesh.m_pos = 0;
-                m_mesh.m_uv = pos;
-                m_mesh.m_normals = pos + uv;
-                m_mesh.m_tangents = pos + uv + normals;
-                m_mesh.m_indices = pos + uv + normals + tangents;
-                m_mesh.m_indices_size = static_cast<uint32_t>(size(mesh->m_indices));
-                m_mesh.m_vertex_count = static_cast<uint32_t>(mesh->m_positions.size());
+                m_mesh.m_pos            = 0;
+                m_mesh.m_uv             = pos;
+                m_mesh.m_normals        = pos + uv;
+                m_mesh.m_tangents       = pos + uv + normals;
+                m_mesh.m_blend_weights  = pos + uv + normals + tangents;
+                m_mesh.m_blend_indices  = pos + uv + normals + tangents + blend_weights;
+                m_mesh.m_indices        = pos + uv + normals + tangents + blend_weights + blend_indices;
+                m_mesh.m_indices_size   = static_cast<uint32_t>(size(mesh->m_indices));
+                m_mesh.m_vertex_count   = static_cast<uint32_t>(mesh->m_positions.size());
 
                 ctx->upload_buffer(m_geometry.get(), m_mesh.m_pos, mesh->m_positions.data(), size(mesh->m_positions));
                 ctx->upload_buffer(m_geometry.get(), m_mesh.m_uv, mesh->m_uv.data(), size(mesh->m_uv));
                 ctx->upload_buffer(m_geometry.get(), m_mesh.m_normals, mesh->m_normals.data(), size(mesh->m_normals));
                 ctx->upload_buffer(m_geometry.get(), m_mesh.m_tangents, mesh->m_tangents.data(), size(mesh->m_tangents));
+                ctx->upload_buffer(m_geometry.get(), m_mesh.m_blend_weights, mesh->m_blend_weights.data(), blend_weight_size);
+                ctx->upload_buffer(m_geometry.get(), m_mesh.m_blend_indices, mesh->m_blend_indices.data(), blend_indices_size);
                 ctx->upload_buffer(m_geometry.get(), m_mesh.m_indices, mesh->m_indices.data(), size(mesh->m_indices));
 
                 ctx->transition_resource(m_geometry.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);

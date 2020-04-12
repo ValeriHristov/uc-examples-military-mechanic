@@ -79,6 +79,9 @@ namespace uc
                 interop::offset		m_normals;
                 interop::offset		m_tangents;
                 interop::offset		m_indices;
+                interop::offset		m_blend_weights;
+                interop::offset		m_blend_indices;
+
                 uint32_t			m_indices_size;
                 uint32_t			m_vertex_count;
             };
