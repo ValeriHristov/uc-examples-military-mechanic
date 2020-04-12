@@ -76,7 +76,7 @@ namespace uc
                 const auto tangents     = static_cast<uint32_t>(align(size(mesh->m_tangents),   256UL));
                 const auto indices      = static_cast<uint32_t>(align(size(mesh->m_indices),    256UL));
                 const auto blend_weight_size = mesh->m_blend_weights.size() * sizeof(lip::float4);
-                const auto blend_indices_size = mesh->m_blend_weights.size() * sizeof(lip::ubyte4);
+                const auto blend_indices_size = mesh->m_blend_indices.size() * sizeof(lip::ubyte4);
 
                 const auto blend_weights      = static_cast<uint32_t>(align(blend_weight_size, 256UL) );
                 const auto blend_indices      = static_cast<uint32_t>(align(blend_indices_size, 256UL));
@@ -334,13 +334,15 @@ namespace uc
                 graphics->set_pso(m_soldier_depth);
                 graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
                 graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
+
                 graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+                
 
                 graphics->set_graphics_constant_buffer(1, f);
                 graphics->set_graphics_srv_buffer(2, m_geometry.get());
+                graphics->set_graphics_constant_buffer(5, m_constants_pass);
 
                 graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
@@ -351,7 +353,6 @@ namespace uc
                 graphics->draw_indexed(m_mesh.m_indices_size / 4);
             }
 
-            graphics->transition_resource(depth_buffer, D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_DEPTH_READ);
             //opaque
             {
                 graphics->set_render_target(back_buffer, depth_buffer);
@@ -363,12 +364,17 @@ namespace uc
 
                 graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
                 graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
+
                 graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
                 graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
                 graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
                 graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+                
                 graphics->set_graphics_constant_buffer(1, f);
                 graphics->set_graphics_srv_buffer(2, m_geometry.get());
+                graphics->set_graphics_constant_buffer(5, m_constants_pass);
 
                 graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 

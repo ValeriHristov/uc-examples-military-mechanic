@@ -5,6 +5,7 @@
 typedef uint uint32_t;
 #else
 #include <uc/math/math.h>
+#include <type_traits>
 #endif
 
 
@@ -27,8 +28,8 @@ namespace interop
         offset                 m_batch;
         offset                 m_start_vertex;
 
-        offset                 m_pad0;
-        offset                 m_pad1;
+        offset                 m_blend_weights;
+        offset                 m_blend_indices;
 
         offset                 m_position;
         offset                 m_uv;
@@ -36,8 +37,13 @@ namespace interop
         offset                 m_normal;
         offset                 m_tangent;
 
+
         euclidean_transform_3d m_world;
     };
+
+    #if defined(__cplusplus)
+    static_assert(sizeof(draw_call) <= 32 * 4, "64-bit code generation is not supported.");
+    #endif
 
     struct skinned_draw_constants
     {

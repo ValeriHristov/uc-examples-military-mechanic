@@ -20,6 +20,7 @@
               "SRV(t0, visibility = SHADER_VISIBILITY_VERTEX), " \
               "DescriptorTable( CBV(b2, numDescriptors = 3), visibility = SHADER_VISIBILITY_PIXEL)," \
               "DescriptorTable( SRV(t1, numDescriptors = 3), visibility = SHADER_VISIBILITY_PIXEL)," \
+              "CBV(b2, space = 0, visibility = SHADER_VISIBILITY_VERTEX), " \
               "StaticSampler(s0)," \
               "StaticSampler(s1)," \
               "StaticSampler(s2, addressU = TEXTURE_ADDRESS_CLAMP,  addressV = TEXTURE_ADDRESS_CLAMP, addressW = TEXTURE_ADDRESS_CLAMP, filter = FILTER_MIN_MAG_MIP_POINT )," \
