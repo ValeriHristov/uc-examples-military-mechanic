@@ -256,16 +256,16 @@ namespace uc
 
             concurrency::task_group g;
 
-            m_frame_time = m_frame_timer.seconds();
+            m_frame_time = m_frame_timer.milliseconds();
             m_frame_timer.reset();
 
             m_skeleton_instance->reset();
             m_animation_instance->accumulate(m_skeleton_instance.get(), m_frame_time);
 
-            interop::skinned_draw_constants m_constants_pass;
+            interop::skinned_draw_constants constants_pass;
 
             {
-                interop::skinned_draw_constants& draw = m_constants_pass;
+                interop::skinned_draw_constants& draw = constants_pass;
 
                 {
                     auto skeleton = m_military_mechanic_skeleton.get();
@@ -342,7 +342,7 @@ namespace uc
 
                 graphics->set_graphics_constant_buffer(1, f);
                 graphics->set_graphics_srv_buffer(2, m_geometry.get());
-                graphics->set_graphics_constant_buffer(5, m_constants_pass);
+                graphics->set_graphics_constant_buffer(5, constants_pass);
 
                 graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
@@ -374,7 +374,7 @@ namespace uc
                 
                 graphics->set_graphics_constant_buffer(1, f);
                 graphics->set_graphics_srv_buffer(2, m_geometry.get());
-                graphics->set_graphics_constant_buffer(5, m_constants_pass);
+                graphics->set_graphics_constant_buffer(5, constants_pass);
 
                 graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
