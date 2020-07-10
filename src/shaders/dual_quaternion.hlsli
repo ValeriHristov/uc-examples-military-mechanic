@@ -1,7 +1,6 @@
 #ifndef __dual_quaternion_hlsli__
 #define __dual_quaternion_hlsli__
 
-
 struct quaternion
 {
 
@@ -32,6 +31,22 @@ quaternion mul(quaternion a, quaternion b)
     quaternion r ;
     r.m_v = float4(x,y,z,w);
     return r;
+}
+
+float dot(quaternion q1, quaternion q2)
+{
+    return dot(q1.m_v, q2.m_v);
+}
+
+float norm(quaternion q)
+{
+    return sqrt(dot(q.m_v, q.m_v));
+}
+
+float3 rotate(quaternion q, float3 v)
+{
+    float3 t = 2 * cross(q.m_v.xyz, v);
+    return v + q.m_v.w * t + cross(q.m_v.xyz, t);
 }
 
 float4x4 mat4x4(quaternion q)
@@ -204,8 +219,6 @@ quaternion quat(float4x4 m)
     r.m_v = rv;
     return  r;
 }
-
-
 
 [numthreads(1,1,1)]
 void main()
