@@ -22,7 +22,6 @@ quaternion conjugate( quaternion q)
 
 quaternion mul(quaternion a, quaternion b)
 {
-
     float x = a.w() * b.x() + a.x() * b.w()  + a.y() * b.z() - a.z() * b.y();
     float y = a.w() * b.y() - a.x() * b.z()  + a.y() * b.w() + a.z() * b.x();
     float z = a.w() * b.z() + a.x() * b.y()  - a.y() * b.x() + a.z() * b.w();
@@ -41,6 +40,14 @@ float dot(quaternion q1, quaternion q2)
 float norm(quaternion q)
 {
     return sqrt(dot(q.m_v, q.m_v));
+}
+
+quaternion normalize( quaternion q)
+{
+    float n     = norm(q);
+    quaternion  r;
+    r.m_v       = q.m_v / n;
+    return r;
 }
 
 float3 rotate(quaternion q, float3 v)
@@ -219,6 +226,40 @@ quaternion quat(float4x4 m)
     r.m_v = rv;
     return  r;
 }
+
+struct dual_quaternion
+{
+
+    // Non-dual part of the dual quaternion. It also represent the rotation.
+    /// @warning If you want to compute the rotation with this don't forget
+    /// to normalize the quaternion as it might be the result of a
+    /// dual quaternion linear blending
+    /// (when overloaded operators like '+' or '*' are used)
+    quaternion m_real;
+
+    /// Dual part of the dual quaternion which represent the translation.
+    /// translation can be extracted by computing
+    /// 2.f * _quat_e * conjugate(_quat_0)
+    /// @warning don't forget to normalize quat_0 and quat_e :
+    /// quat_0 = quat_0 / || quat_0 || and quat_e = quat_e / || quat_0 ||
+    quaternion m_dual;
+};
+
+quaternion rotation(dual_quaternion q)
+{
+    return normalize(q.m_real);
+}
+
+float3 translation(dual_quaternion q)
+{
+    /// 2.f * _quat_e * conjugate(_quat_0)
+    quaternion r = rotation(q);
+    quaternion d = normalize(q.m_dual);
+    quaternion m = mul(d, conjugate(r));
+
+    return 2 * m.m_v.xyz;
+}
+
 
 [numthreads(1,1,1)]
 void main()
