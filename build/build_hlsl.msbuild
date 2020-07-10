@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"> 
-
-<ItemGroup> 
-    <PixelShader Include  = "..\src\shaders\pixel_shader.hlsl"></PixelShader>
-    <VertexShader Include = "..\src\shaders\soldier_geometry_uv.hlsl"></VertexShader>
-    <PixelShader Include  = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
-    <VertexShader Include = "..\src\shaders\soldier_geometry_depth.hlsl"></VertexShader>
-
-    <RootSignature Include = "..\src\shaders\default_compute_signature.hlsl">
-        <EntryPointName>MyRS2</EntryPointName>
-    </RootSignature>
-
-    <RootSignature Include = "..\src\shaders\default_graphics_signature.hlsl">
-        <EntryPointName>MyRS1</EntryPointName>
-    </RootSignature>
-
-    <RootSignature Include = "..\src\shaders\default_depth_signature.hlsl">
-        <EntryPointName>MyRS1</EntryPointName>
-    </RootSignature>
-
-</ItemGroup>
-
+
+
+<ItemGroup> 
+
+    <PixelShader Include    = "..\src\shaders\pixel_shader.hlsl"></PixelShader>
+    <VertexShader Include   = "..\src\shaders\soldier_geometry_uv.hlsl"></VertexShader>
+    <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
+    <VertexShader Include   = "..\src\shaders\soldier_geometry_depth.hlsl"></VertexShader>
+    <ComputeShader Include  = "..\src\shaders\dual_quaternion_test.hlsl"></ComputeShader>
+
+    <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
+    <RootSignature Include  = "..\src\shaders\default_compute_signature.hlsl">
+        <EntryPointName>MyRS2</EntryPointName>
+    </RootSignature>
+
+    <RootSignature Include = "..\src\shaders\default_graphics_signature.hlsl">
+        <EntryPointName>MyRS1</EntryPointName>
+    </RootSignature>
+
+    <RootSignature Include = "..\src\shaders\default_depth_signature.hlsl">
+        <EntryPointName>MyRS1</EntryPointName>
+    </RootSignature>
+    
+</ItemGroup>
+
+
+
 
 </Project> 
