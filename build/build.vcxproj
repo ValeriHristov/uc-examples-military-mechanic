@@ -20,10 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="packages\lzham-uwp-win64.1.0.0\bin\win-x64\lzham_uwp_x64.dll">
-      <Link>%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E97E2A28-0291-4337-9863-AF619A7C606F}</ProjectGuid>
