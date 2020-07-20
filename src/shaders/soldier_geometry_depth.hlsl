@@ -65,8 +65,11 @@ interpolants main(uint v : SV_VERTEXID)
     float4 weights = load_blend_weights(v);
     uint4  indices = load_blend_indices(v);
 
+    #if defined(SKIN_LBS)
     float3 position2                = skin_position1(float4(i.position,1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
-    //float3 position2                = skin_position2(float4(i.position, 1.0f), weights, indices, g_skinned_constants.m_scales, g_skinned_constants.m_rotations, g_skinned_constants.m_translations).xyz;
+    #else
+    float3 position2                = skin_position2(float4(i.position, 1.0f), weights, indices, g_skinned_constants.m_scales, g_skinned_constants.m_rotations, g_skinned_constants.m_translations).xyz;
+    #endif
     point_os position_os            = make_point_os(position2);
 
     euclidean_transform_3d  world = m_draw_call.m_world;
