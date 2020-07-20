@@ -45,9 +45,19 @@ namespace interop
     static_assert(sizeof(draw_call) <= 32 * 4, "64-bit code generation is not supported.");
     #endif
 
+    #if defined(__cplusplus)
+    struct alignas(4) float3x3
+    {
+        float   r[9];
+    };
+    #endif
+
     struct skinned_draw_constants
     {
         float4x4 m_joints_palette[127];
+        float4   m_translations[127];
+        float3x3 m_rotations[127];
+        float3x3 m_scales[127];
     };
 }
 

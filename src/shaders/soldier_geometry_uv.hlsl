@@ -25,7 +25,7 @@ cbuffer per_draw_call : register(b0)
 
 cbuffer per_draw_call_external : register(b2)
 {
-    interop::skinned_draw_constants  m_joints_palette;
+    interop::skinned_draw_constants  g_skinned_constants;
 };
 
 
@@ -77,7 +77,7 @@ interpolants main(uint v : SV_VERTEXID)
     float4 weights                  = load_blend_weights(v);
     uint4  indices                  = load_blend_indices(v);
 
-    float3 position2                = skin_position(float4(i.position,1.0f), weights, indices, m_joints_palette).xyz;
+    float3 position2                = skin_position(float4(i.position,1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
 
     point_os position_os            = make_point_os(position2);
     euclidean_transform_3d  world   = m_draw_call.m_world;

@@ -20,6 +20,8 @@
 
 #include "uwp/file.h"
 
+#include <svd_hlslpp/svd_hlsl.h>
+
 namespace
 {
     size_t align(size_t v, size_t a)
@@ -262,7 +264,7 @@ namespace uc
             m_skeleton_instance->reset();
             m_animation_instance->accumulate(m_skeleton_instance.get(), m_frame_time);
 
-            interop::skinned_draw_constants constants_pass;
+            interop::skinned_draw_constants constants_pass = {}; //do not clear in production code
 
             {
                 interop::skinned_draw_constants& draw = constants_pass;
@@ -274,8 +276,52 @@ namespace uc
                     //todo: avx2
                     for (auto i = 0U; i < joints.size(); ++i)
                     {
-                        math::float4x4 bind_pose    = math::load44(&skeleton->m_joint_inverse_bind_pose2[i].m_a0);
-                        math::float4x4 palette      = math::mul(bind_pose, joints[i]);
+                        math::float4x4 bind_pose     = math::load44(&skeleton->m_joint_inverse_bind_pose2[i].m_a0);
+                        math::float4x4 palette       = math::mul(bind_pose, joints[i]);
+                        math::float4   translation   = palette.r[3];
+
+                        using namespace svdhlslcpp;
+
+                        matrix3x3 decompose;
+
+                        math::store3(&decompose.a11, palette.r[0]);
+                        math::store3(&decompose.a21, palette.r[1]);
+                        math::store3(&decompose.a31, palette.r[2]);
+
+                        svd_result_polar polar      = compute_as_matrix_polar_decomposition(decompose);
+
+                        for (auto j = 0; j < 9; ++j)
+                        {
+                            draw.m_rotations[i].r[0] = polar.m_u.a11;
+                            draw.m_rotations[i].r[1] = polar.m_u.a12;
+                            draw.m_rotations[i].r[2] = polar.m_u.a13;
+
+                            draw.m_rotations[i].r[3] = polar.m_u.a21;
+                            draw.m_rotations[i].r[4] = polar.m_u.a22;
+                            draw.m_rotations[i].r[5] = polar.m_u.a23;
+
+                            draw.m_rotations[i].r[6] = polar.m_u.a31;
+                            draw.m_rotations[i].r[7] = polar.m_u.a32;
+                            draw.m_rotations[i].r[8] = polar.m_u.a33;
+                        }
+
+                        for (auto j = 0; j < 9; ++j)
+                        {
+                            draw.m_scales[i].r[0] = polar.m_h.a11;
+                            draw.m_scales[i].r[1] = polar.m_h.a12;
+                            draw.m_scales[i].r[2] = polar.m_h.a13;
+
+                            draw.m_scales[i].r[3] = polar.m_h.a21;
+                            draw.m_scales[i].r[4] = polar.m_h.a22;
+                            draw.m_scales[i].r[5] = polar.m_h.a23;
+
+                            draw.m_scales[i].r[6] = polar.m_h.a31;
+                            draw.m_scales[i].r[7] = polar.m_h.a32;
+                            draw.m_scales[i].r[8] = polar.m_h.a33;
+                        }
+
+                        draw.m_translations[i] = translation;
+
                         draw.m_joints_palette[i]    = math::transpose(palette);
                     }
                 }
