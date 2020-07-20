@@ -9,6 +9,7 @@
     <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
     <VertexShader Include   = "..\src\shaders\soldier_geometry_depth.hlsl"></VertexShader>
     <ComputeShader Include  = "..\src\shaders\dual_quaternion_test.hlsl"></ComputeShader>
+    <ComputeShader Include  = "..\src\shaders\polar_decomposition_compute.hlsl"></ComputeShader>
 
     <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
     <RootSignature Include  = "..\src\shaders\default_compute_signature.hlsl">

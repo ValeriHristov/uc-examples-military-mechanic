@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\uc-tools-msbuild-tasks.1.0.44\build\uc-tools-msbuild-tasks.props" Condition="Exists('packages\uc-tools-msbuild-tasks.1.0.44\build\uc-tools-msbuild-tasks.props')" />
   <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.200703.9\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.200703.9\build\native\Microsoft.Windows.CppWinRT.props')" />
   <Import Project="packages\lzham-uwp-win64.1.0.1\build\lzham-uwp-win64.props" Condition="Exists('packages\lzham-uwp-win64.1.0.1\build\lzham-uwp-win64.props')" />
   <Import Project="packages\uc-data-military-mechanic.1.0.15\build\native\uc-data-military-mechanic.props" Condition="Exists('packages\uc-data-military-mechanic.1.0.15\build\native\uc-data-military-mechanic.props')" />
   <Import Project="packages\uc-serialization-engine.1.0.16\build\native\uc-serialization-engine.props" Condition="Exists('packages\uc-serialization-engine.1.0.16\build\native\uc-serialization-engine.props')" />
   <Import Project="packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.38\build\uc-tools-graphics-gpu-pipeline-compiler.props" Condition="Exists('packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.38\build\uc-tools-graphics-gpu-pipeline-compiler.props')" />
   <Import Project="packages\uc-tools-graphics-gpu-shader-compiler.1.0.17\build\uc-tools-graphics-gpu-shader-compiler.props" Condition="Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.17\build\uc-tools-graphics-gpu-shader-compiler.props')" />
-  <Import Project="packages\uc-tools-msbuild-tasks.1.0.43\build\uc-tools-msbuild-tasks.props" Condition="Exists('packages\uc-tools-msbuild-tasks.1.0.43\build\uc-tools-msbuild-tasks.props')" />
   <Import Project="packages\uc-graphics.1.0.44\build\native\uc-graphics.props" Condition="Exists('packages\uc-graphics.1.0.44\build\native\uc-graphics.props')" />
   <Import Project="packages\uc-math.1.0.6\build\native\uc-math.props" Condition="Exists('packages\uc-math.1.0.6\build\native\uc-math.props')" />
   <Import Project="packages\uc-io-input.1.0.10\build\native\uc-io-input.props" Condition="Exists('packages\uc-io-input.1.0.10\build\native\uc-io-input.props')" />
@@ -138,8 +138,6 @@
     <Error Condition="!Exists('packages\uc-graphics.1.0.44\build\native\uc-graphics.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-graphics.1.0.44\build\native\uc-graphics.targets'))" />
     <Error Condition="!Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.17\build\uc-tools-graphics-gpu-shader-compiler.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-shader-compiler.1.0.17\build\uc-tools-graphics-gpu-shader-compiler.props'))" />
     <Error Condition="!Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.17\build\uc-tools-graphics-gpu-shader-compiler.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-shader-compiler.1.0.17\build\uc-tools-graphics-gpu-shader-compiler.targets'))" />
-    <Error Condition="!Exists('packages\uc-tools-msbuild-tasks.1.0.43\build\uc-tools-msbuild-tasks.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-msbuild-tasks.1.0.43\build\uc-tools-msbuild-tasks.props'))" />
-    <Error Condition="!Exists('packages\uc-tools-msbuild-tasks.1.0.43\build\uc-tools-msbuild-tasks.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-msbuild-tasks.1.0.43\build\uc-tools-msbuild-tasks.targets'))" />
     <Error Condition="!Exists('packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.38\build\uc-tools-graphics-gpu-pipeline-compiler.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.38\build\uc-tools-graphics-gpu-pipeline-compiler.props'))" />
     <Error Condition="!Exists('packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.38\build\uc-tools-graphics-gpu-pipeline-compiler.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.38\build\uc-tools-graphics-gpu-pipeline-compiler.targets'))" />
     <Error Condition="!Exists('packages\uc-serialization-engine.1.0.16\build\native\uc-serialization-engine.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-serialization-engine.1.0.16\build\native\uc-serialization-engine.props'))" />
@@ -150,6 +148,8 @@
     <Error Condition="!Exists('packages\lzham-uwp-win64.1.0.1\build\lzham-uwp-win64.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\lzham-uwp-win64.1.0.1\build\lzham-uwp-win64.targets'))" />
     <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.200703.9\build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.200703.9\build\native\Microsoft.Windows.CppWinRT.props'))" />
     <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.200703.9\build\native\Microsoft.Windows.CppWinRT.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.200703.9\build\native\Microsoft.Windows.CppWinRT.targets'))" />
+    <Error Condition="!Exists('packages\uc-tools-msbuild-tasks.1.0.44\build\uc-tools-msbuild-tasks.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-msbuild-tasks.1.0.44\build\uc-tools-msbuild-tasks.props'))" />
+    <Error Condition="!Exists('packages\uc-tools-msbuild-tasks.1.0.44\build\uc-tools-msbuild-tasks.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-tools-msbuild-tasks.1.0.44\build\uc-tools-msbuild-tasks.targets'))" />
   </Target>
   <Import Project="packages\microsoft-gsl-library.1.0.8\build\native\microsoft-gsl-library.targets" Condition="Exists('packages\microsoft-gsl-library.1.0.8\build\native\microsoft-gsl-library.targets')" />
   <Import Project="packages\uc-core.1.0.18\build\native\uc-core.targets" Condition="Exists('packages\uc-core.1.0.18\build\native\uc-core.targets')" />
@@ -158,10 +158,10 @@
   <Import Project="packages\uc-math.1.0.6\build\native\uc-math.targets" Condition="Exists('packages\uc-math.1.0.6\build\native\uc-math.targets')" />
   <Import Project="packages\uc-graphics.1.0.44\build\native\uc-graphics.targets" Condition="Exists('packages\uc-graphics.1.0.44\build\native\uc-graphics.targets')" />
   <Import Project="packages\uc-tools-graphics-gpu-shader-compiler.1.0.17\build\uc-tools-graphics-gpu-shader-compiler.targets" Condition="Exists('packages\uc-tools-graphics-gpu-shader-compiler.1.0.17\build\uc-tools-graphics-gpu-shader-compiler.targets')" />
-  <Import Project="packages\uc-tools-msbuild-tasks.1.0.43\build\uc-tools-msbuild-tasks.targets" Condition="Exists('packages\uc-tools-msbuild-tasks.1.0.43\build\uc-tools-msbuild-tasks.targets')" />
   <Import Project="packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.38\build\uc-tools-graphics-gpu-pipeline-compiler.targets" Condition="Exists('packages\uc-tools-graphics-gpu-pipeline-compiler.1.0.38\build\uc-tools-graphics-gpu-pipeline-compiler.targets')" />
   <Import Project="packages\uc-serialization-engine.1.0.16\build\native\uc-serialization-engine.targets" Condition="Exists('packages\uc-serialization-engine.1.0.16\build\native\uc-serialization-engine.targets')" />
   <Import Project="packages\uc-data-military-mechanic.1.0.15\build\native\uc-data-military-mechanic.targets" Condition="Exists('packages\uc-data-military-mechanic.1.0.15\build\native\uc-data-military-mechanic.targets')" />
   <Import Project="packages\lzham-uwp-win64.1.0.1\build\lzham-uwp-win64.targets" Condition="Exists('packages\lzham-uwp-win64.1.0.1\build\lzham-uwp-win64.targets')" />
   <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.200703.9\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.200703.9\build\native\Microsoft.Windows.CppWinRT.targets')" />
+  <Import Project="packages\uc-tools-msbuild-tasks.1.0.44\build\uc-tools-msbuild-tasks.targets" Condition="Exists('packages\uc-tools-msbuild-tasks.1.0.44\build\uc-tools-msbuild-tasks.targets')" />
 </Project>
