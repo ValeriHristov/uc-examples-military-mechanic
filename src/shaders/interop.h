@@ -56,8 +56,6 @@ namespace interop
     {
         float4x4 m_joints_palette[127];
         float4   m_translations[127];
-        float3x3 m_rotations[127];
-        float3x3 m_scales[127];
     };
 }
 

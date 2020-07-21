@@ -277,22 +277,87 @@ namespace uc
 
                         svd_result_polar polar      = compute_as_matrix_polar_decomposition(decompose);
 
-                        for (auto j = 0; j < 9; ++j)
+                        svd_result_matrix_usv usv   = compute_as_matrix_rusv(decompose);
+
+                        matrix3x3 h3                = mul(usv.m_u, mul(usv.m_s, transpose(usv.m_v)));
+
+                        matrix3x3 h2 = mul(polar.m_u, polar.m_h);
+                        float norm = norm_inf(sub(decompose, h2));
+
+                        float norm1 = norm_inf(sub(decompose, h3));
+
+                        if (norm1 > 0.00001f)
                         {
-                            draw.m_rotations[i].r[0] = polar.m_u.a11;
-                            draw.m_rotations[i].r[1] = polar.m_u.a12;
-                            draw.m_rotations[i].r[2] = polar.m_u.a13;
-
-                            draw.m_rotations[i].r[3] = polar.m_u.a21;
-                            draw.m_rotations[i].r[4] = polar.m_u.a22;
-                            draw.m_rotations[i].r[5] = polar.m_u.a23;
-
-                            draw.m_rotations[i].r[6] = polar.m_u.a31;
-                            draw.m_rotations[i].r[7] = polar.m_u.a32;
-                            draw.m_rotations[i].r[8] = polar.m_u.a33;
+                            __debugbreak();
                         }
 
-                        for (auto j = 0; j < 9; ++j)
+                        if (norm > 0.00001f)
+                        {
+                            __debugbreak();
+                        }
+
+                        if (abs(polar.m_h.a11) < 0.00001f)
+                        {
+                            polar.m_h.a11 = 0;
+                        }
+
+                        if (abs(polar.m_h.a12) < 0.00001f)
+                        {
+                            polar.m_h.a12 = 0;
+                        }
+
+                        if (abs(polar.m_h.a13) < 0.00001f)
+                        {
+                            polar.m_h.a13 = 0;
+                        }
+
+
+                        if (abs(polar.m_h.a21) < 0.00001f)
+                        {
+                            polar.m_h.a21 = 0;
+                        }
+
+                        if (abs(polar.m_h.a22) < 0.00001f)
+                        {
+                            polar.m_h.a22 = 0;
+                        }
+
+                        if (abs(polar.m_h.a23) < 0.00001f)
+                        {
+                            polar.m_h.a23 = 0;
+                        }
+
+
+                        if (abs(polar.m_h.a31) < 0.00001f)
+                        {
+                            polar.m_h.a31 = 0;
+                        }
+
+                        if (abs(polar.m_h.a32) < 0.00001f)
+                        {
+                            polar.m_h.a32 = 0;
+                        }
+
+                        if (abs(polar.m_h.a33) < 0.00001f)
+                        {
+                            polar.m_h.a33 = 0;
+                        }
+
+                        /*
+                        {
+                            draw.m_rotations[i * 9 + 0] = decompose.a11;
+                            draw.m_rotations[i * 9 + 1] = decompose.a21;
+                            draw.m_rotations[i * 9 + 2] = decompose.a31;
+
+                            draw.m_rotations[i * 9 + 3] = decompose.a12;
+                            draw.m_rotations[i * 9 + 4] = decompose.a22;
+                            draw.m_rotations[i * 9 + 5] = decompose.a32;
+
+                            draw.m_rotations[i * 9 + 6] = decompose.a13;
+                            draw.m_rotations[i * 9 + 7] = decompose.a23;
+                            draw.m_rotations[i * 9 + 8] = decompose.a33;
+                        }
+
                         {
                             draw.m_scales[i].r[0] = polar.m_h.a11;
                             draw.m_scales[i].r[1] = polar.m_h.a12;
@@ -306,8 +371,9 @@ namespace uc
                             draw.m_scales[i].r[7] = polar.m_h.a32;
                             draw.m_scales[i].r[8] = polar.m_h.a33;
                         }
+                        */
 
-                        draw.m_translations[i] = translation;
+                        draw.m_translations[i]      = translation;
                         draw.m_joints_palette[i]    = math::transpose(palette);
                     }
                 }

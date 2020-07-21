@@ -80,7 +80,7 @@ interpolants main(uint v : SV_VERTEXID)
     #if defined(SKIN_LBS)
     float3 position2                = skin_position1(float4(i.position,1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
     #else
-    float3 position2                = skin_position2(float4(i.position, 1.0f), weights, indices, g_skinned_constants.m_scales, g_skinned_constants.m_rotations, g_skinned_constants.m_translations).xyz;
+    float3 position2                = skin_position2(float4(i.position, 1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
     #endif
 
     point_os position_os            = make_point_os(position2);
