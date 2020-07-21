@@ -41,19 +41,6 @@ namespace uc
         using namespace winrt::Windows::UI::ViewManagement;
         using namespace winrt::Windows::Graphics::Display;
 
-        struct skinned_draw_constants
-        {
-            std::array<math::float4x4, 127> m_joints_palette;
-
-            skinned_draw_constants()
-            {
-                for (auto&& i : m_joints_palette)
-                {
-                    i = math::identity_matrix();
-                }
-            }
-        };
-
         renderer_impl::renderer_impl( bool* window_close, const winrt::Windows::UI::Core::CoreWindow& window, const winrt::Windows::Graphics::Display::DisplayInformation& display_information) : m_main_window(window_close)
         {
             set_window(window);
@@ -321,7 +308,6 @@ namespace uc
                         }
 
                         draw.m_translations[i] = translation;
-
                         draw.m_joints_palette[i]    = math::transpose(palette);
                     }
                 }
