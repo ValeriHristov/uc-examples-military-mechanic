@@ -55,7 +55,6 @@ namespace interop
     struct skinned_draw_constants
     {
         float4x4 m_joints_palette[127];
-        float4   m_translations[127];
     };
 }
 

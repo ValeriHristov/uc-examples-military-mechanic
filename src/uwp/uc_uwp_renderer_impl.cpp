@@ -275,8 +275,9 @@ namespace uc
                         math::store3(&decompose.a21, palette.r[1]);
                         math::store3(&decompose.a31, palette.r[2]);
 
-                        svd_result_polar polar      = compute_as_matrix_polar_decomposition(decompose);
+                        /*
 
+                        svd_result_polar polar      = compute_as_matrix_polar_decomposition(decompose);
                         svd_result_matrix_usv usv   = compute_as_matrix_rusv(decompose);
 
                         matrix3x3 h3                = mul(usv.m_u, mul(usv.m_s, transpose(usv.m_v)));
@@ -343,7 +344,7 @@ namespace uc
                             polar.m_h.a33 = 0;
                         }
 
-                        /*
+                        
                         {
                             draw.m_rotations[i * 9 + 0] = decompose.a11;
                             draw.m_rotations[i * 9 + 1] = decompose.a21;
@@ -373,7 +374,6 @@ namespace uc
                         }
                         */
 
-                        draw.m_translations[i]      = translation;
                         draw.m_joints_palette[i]    = math::transpose(palette);
                     }
                 }
