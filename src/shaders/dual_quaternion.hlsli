@@ -250,7 +250,7 @@ quaternion quat(float4x4 m)
     return  r;
 }
 
-quaternion quat(float3x3 m)
+quaternion quat1(float3x3 m)
 {           
     //todo: revise this
     //https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
@@ -373,6 +373,67 @@ quaternion quat(float3x3 m)
 
     quaternion r;
     r.m_v = rv;
+    return  r;
+}
+
+quaternion quat(float3x3 m)
+{           
+    const float m00 = m._11;
+    const float m01 = m._12;
+    const float m02 = m._13;
+
+    const float m10 = m._21;
+    const float m11 = m._22;
+    const float m12 = m._23;
+
+    const float m20 = m._31;
+    const float m21 = m._32;
+    const float m22 = m._33;
+
+    float t = 0;
+    quaternion q;
+    if ( m22 < 0.0)
+    {
+        if ( m00 > m11 )
+        {
+            t       = 1 + m00 - m11 - m22;
+            q.m_v.x = t;
+            q.m_v.y = m01 + m10;
+            q.m_v.z = m20 + m02;
+            q.m_v.w = m12 - m21;
+        }
+        else
+        {
+            t       = 1 - m00 + m11 - m22;
+            q.m_v.x = m01 + m10;
+            q.m_v.y = t;
+            q.m_v.z = m12 + m21;
+            q.m_v.w = m20 - m02;
+            
+        }
+    }
+    else
+    {
+        if ( m00 < -m11)
+        {
+            t = 1 - m00 - m11 + m22;
+            q.m_v.x = m20 + m02;
+            q.m_v.y = m12 + m21;
+            q.m_v.z = t;
+            q.m_v.w = m01 - m10;
+        }
+        else
+        {
+            t = 1 + m00 + m11 + m22;
+            q.m_v.x = m12 + m21;
+            q.m_v.y = m20 + m02;
+            q.m_v.z = m01 - m10;
+            q.m_v.w = t;
+        }
+    }
+
+    quaternion r;
+    r.m_v = q.m_v / sqrt(t);
     return  r;
 }
 
