@@ -3,7 +3,7 @@
 
 #include "dual_quaternion.hlsli"
 
-#define SKIN_LBS
+#define SKIN_LBS1
 
 //todo: replace with quaternions
 float4 skin_position(float4 position, float4x4 joint_transform, float weight)
@@ -47,9 +47,9 @@ float3 skin_normal(float3 normal, float4 weights, float4 indices, float4x4 joint
 
 void decompose( float4x4 joint, out float3x3 rotation, out float3 translation)
 {
-    translation.x   = joint._14;
-    translation.y   = joint._24;
-    translation.z   = joint._34;
+    translation.x   = joint._41;
+    translation.y   = joint._42;
+    translation.z   = joint._43;
 
     rotation._11    = joint._11;
     rotation._12    = joint._12;
@@ -71,7 +71,7 @@ float4 skin_position2(float4 position, float4 weights, float4 indices, float4x4 
     float3x3    rotation2;
     float3x3    rotation3;
 
-        float3      translation0;
+    float3      translation0;
     float3      translation1;
     float3      translation2;
     float3      translation3;
@@ -97,14 +97,9 @@ float4 skin_position2(float4 position, float4 weights, float4 indices, float4x4 
     quaternion pivot          = rotation(dq0);
     dual_quaternion  dq_blend = mul( dq0, weights.x);
 
-    float wy                  = dot( rotation(dq1), pivot) < 0.0f ? -1.0f : 1.0f;
-    weights.y                 = weights.y * wy;
-
-    float wz                  = dot( rotation(dq2), pivot) < 0.0f ? -1.0f : 1.0f;
-    weights.z                 = weights.z * wz;
-
-    float ww                  = dot( rotation(dq3), pivot) < 0.0f ? -1.0f : 1.0f;
-    weights.w                 = weights.w * ww;
+    weights.y                 *= sign(dot(rotation(dq1), pivot));
+    weights.z                 *= sign(dot(rotation(dq2), pivot));
+    weights.w                 *= sign(dot(rotation(dq3), pivot));
 
     dq_blend                  = add(dq_blend, mul(dq1, weights.y));
     dq_blend                  = add(dq_blend, mul(dq2, weights.z));
