@@ -3,7 +3,7 @@
 
 #include "dual_quaternion.hlsli"
 
-#define SKIN_LBS1
+#define SKIN_LBS
 
 //todo: replace with quaternions
 float4 skin_position(float4 position, float4x4 joint_transform, float weight)
@@ -45,37 +45,6 @@ float3 skin_normal(float3 normal, float4 weights, float4 indices, float4x4 joint
     return skinned_normal;
 }
 
-float3 skin_position_scale(float3 position, float4x4 jont_transform, float weight)
-{
-    float3x3 m;
-
-    m._11 = jont_transform._11;
-    m._12 = jont_transform._12;
-    m._13 = jont_transform._13;
-
-    m._21 = jont_transform._21;
-    m._22 = jont_transform._22;
-    m._23 = jont_transform._23;
-
-    m._31 = jont_transform._31;
-    m._32 = jont_transform._32;
-    m._33 = jont_transform._33;
-
-    return mul( position, m ) * weight;
-}
-
-
-float3 skin_position_translation(float3 position, float4x4 joint_transform, float weight)
-{
-    float3 translation;
-
-    translation.x = joint_transform._41;
-    translation.y = joint_transform._42;
-    translation.z = joint_transform._43;
-
-    return (position + translation) * weight;
-}
-
 void decompose( float4x4 joint, out float3x3 rotation, out float3 translation)
 {
     translation.x   = joint._14;
@@ -97,15 +66,15 @@ void decompose( float4x4 joint, out float3x3 rotation, out float3 translation)
 
 float4 skin_position2(float4 position, float4 weights, float4 indices, float4x4 joints[127])
 {
-    float3      translation0;
-    float3      translation1;
-    float3      translation2;
-    float3      translation3;
-
     float3x3    rotation0;
     float3x3    rotation1;
     float3x3    rotation2;
     float3x3    rotation3;
+
+        float3      translation0;
+    float3      translation1;
+    float3      translation2;
+    float3      translation3;
 
     //Per bone, can go in a compute pass
     decompose( joints[indices.x], rotation0, translation0);
@@ -142,22 +111,6 @@ float4 skin_position2(float4 position, float4 weights, float4 indices, float4x4 
     dq_blend                  = add(dq_blend, mul(dq3, weights.w));
 
     float3 pos                = transformPoint(dq_blend, position.xyz);
-
-
-    /*
-    skinned_position_0            = skin_position_scale(position.xyz, joints[indices.x], weights.x);
-    skinned_position_0           += skin_position_scale(position.xyz, joints[indices.y], weights.y);
-    skinned_position_0           += skin_position_scale(position.xyz, joints[indices.z], weights.z);
-    skinned_position_0           += skin_position_scale(position.xyz, joints[indices.w], weights.w);
-
-    skinned_position_1            = skin_position_translation(skinned_position_0, joints[indices.x], weights.x);
-    skinned_position_1           += skin_position_translation(skinned_position_0, joints[indices.y], weights.y);
-    skinned_position_1           += skin_position_translation(skinned_position_0, joints[indices.z], weights.z);
-    skinned_position_1           += skin_position_translation(skinned_position_0, joints[indices.w], weights.w);
-    */
-
-    //pos              		    /= (weights.x + weights.y + weights.z + weights.w);
-
     return float4(pos, 1.0);
 }
 

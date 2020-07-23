@@ -456,7 +456,7 @@ struct dual_quaternion
 
 dual_quaternion dual_quat( quaternion rotation, float3 translation)
 {
-    quaternion q    = normalize(rotation);
+    quaternion q    = rotation;
     float3     t    = translation;
 
     float w = -0.5f*( t.x * q.i() + t.y * q.j() + t.z * q.k());
