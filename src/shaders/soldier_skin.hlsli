@@ -107,6 +107,7 @@ float4 skin_position2(float4 position, float4 weights, float4 indices, float4x4 
     float3x3    rotation2;
     float3x3    rotation3;
 
+    //Per bone, can go in a compute pass
     decompose( joints[indices.x], rotation0, translation0);
     decompose( joints[indices.y], rotation1, translation1);
     decompose( joints[indices.z], rotation2, translation2);
@@ -122,8 +123,9 @@ float4 skin_position2(float4 position, float4 weights, float4 indices, float4x4 
     dual_quaternion dq2     = dual_quat( quaternion2, translation2);
     dual_quaternion dq3     = dual_quat( quaternion3, translation3);
 
-    quaternion pivot          = rotation(dq0);
+    //Per vertex
 
+    quaternion pivot          = rotation(dq0);
     dual_quaternion  dq_blend = mul( dq0, weights.x);
 
     float wy                  = dot( rotation(dq1), pivot) < 0.0f ? -1.0f : 1.0f;
