@@ -78,9 +78,9 @@ float3 skin_position_translation(float3 position, float4x4 joint_transform, floa
 
 void decompose( float4x4 joint, out float3x3 rotation, out float3 translation)
 {
-    translation.x   = joint[0].w;
-    translation.y   = joint[1].w;
-    translation.z   = joint[2].w;
+    translation.x   = joint._14;
+    translation.y   = joint._24;
+    translation.z   = joint._34;
 
     rotation._11    = joint._11;
     rotation._12    = joint._12;

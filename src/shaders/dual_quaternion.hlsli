@@ -488,7 +488,7 @@ dual_quaternion add(dual_quaternion q1, dual_quaternion q2 )
     dual_quaternion r;
 
     r.m_real = add( q1.m_real, q2.m_real);
-    r.m_dual = add( q1.m_real, q2.m_real);
+    r.m_dual = add( q1.m_dual, q2.m_dual);
 
     return r;
 }
@@ -530,13 +530,5 @@ float3 transformVector(dual_quaternion d, float3 v)
 {
     return rotate(d.m_real, v);
 }
-
-[numthreads(1,1,1)]
-void main()
-{
-    
-
-}
-
 
 #endif
