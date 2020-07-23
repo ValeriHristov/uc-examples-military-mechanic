@@ -250,7 +250,7 @@ quaternion quat(float4x4 m)
     return  r;
 }
 
-quaternion quat1(float3x3 m)
+quaternion quat(float3x3 m)
 {           
     //todo: revise this
     //https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
@@ -376,7 +376,7 @@ quaternion quat1(float3x3 m)
     return  r;
 }
 
-quaternion quat(float3x3 m)
+quaternion quat1(float3x3 m)
 {           
     const float m00 = m._11;
     const float m01 = m._12;
