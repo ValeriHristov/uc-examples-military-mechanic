@@ -3,8 +3,6 @@
 
 #include "dual_quaternion.hlsli"
 
-#define SKIN_LBS1
-
 //todo: replace with quaternions
 float4 skin_position(float4 position, float4x4 joint_transform, float weight)
 {

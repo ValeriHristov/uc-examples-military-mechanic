@@ -141,7 +141,7 @@ namespace uc
                 // map into anim's duration
                 m_time = fmod(m_time, a->m_duration);
 
-                time = m_time;
+                time = 0.2;// m_time;
 
                 auto s = a->m_joint_animations.size();
 

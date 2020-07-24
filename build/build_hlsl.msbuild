@@ -5,13 +5,20 @@
 <ItemGroup> 
 
     <PixelShader Include    = "..\src\shaders\pixel_shader.hlsl"></PixelShader>
-    <VertexShader Include   = "..\src\shaders\soldier_geometry_uv.hlsl"></VertexShader>
+
     <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
+
+    <VertexShader Include   = "..\src\shaders\soldier_geometry_uv.hlsl"></VertexShader>
     <VertexShader Include   = "..\src\shaders\soldier_geometry_depth.hlsl"></VertexShader>
+
+    <VertexShader Include   = "..\src\shaders\soldier_geometry_uv_dq.hlsl"></VertexShader>
+    <VertexShader Include   = "..\src\shaders\soldier_geometry_depth_dq.hlsl"></VertexShader>
+
     <ComputeShader Include  = "..\src\shaders\dual_quaternion_test.hlsl"></ComputeShader>
     <ComputeShader Include  = "..\src\shaders\polar_decomposition_compute.hlsl"></ComputeShader>
 
     <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
+
     <RootSignature Include  = "..\src\shaders\default_compute_signature.hlsl">
         <EntryPointName>MyRS2</EntryPointName>
     </RootSignature>
@@ -23,7 +30,7 @@
     <RootSignature Include = "..\src\shaders\default_depth_signature.hlsl">
         <EntryPointName>MyRS1</EntryPointName>
     </RootSignature>
-    
+
 </ItemGroup>
 
 

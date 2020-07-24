@@ -4,6 +4,8 @@
 <ItemGroup> 
    <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics</EntryPointName></GraphicsPipelineStateObject>    
    <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics_depth.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics_depth</EntryPointName></GraphicsPipelineStateObject>    
+   <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics_dq.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics_dq</EntryPointName></GraphicsPipelineStateObject>    
+   <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics_depth_dq.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics_depth_dq</EntryPointName></GraphicsPipelineStateObject>    
    <ComputePipelineStateObject  Include = "..\src\pso\polar_decomposition_pso.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>polar_decomposition_pso</EntryPointName></ComputePipelineStateObject>    
 </ItemGroup>
 

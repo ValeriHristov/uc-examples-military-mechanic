@@ -70,7 +70,6 @@ namespace uc
                 const auto blend_weights      = static_cast<uint32_t>(align(blend_weight_size, 256UL) );
                 const auto blend_indices      = static_cast<uint32_t>(align(blend_indices_size, 256UL));
                 
-
                 gpu_resource_create_context* rc = m_resources.resource_create_context();
 
                 gx::dx12::managed_graphics_command_context ctx = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
@@ -135,8 +134,27 @@ namespace uc
 
                 m_resources.wait_for_gpu();
 
-                m_soldier          = gx::dx12::soldier_graphics::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
-                m_soldier_depth    = gx::dx12::soldier_graphics_depth::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+                concurrency::task_group g2;
+
+                g2.run([this, &rc]()
+                {
+                    m_soldier = gx::dx12::soldier_graphics::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+                });
+
+                g2.run([this, &rc]()
+                {
+                    m_soldier_depth    = gx::dx12::soldier_graphics_depth::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+                });
+
+                g2.run([this, &rc]()
+                {
+                    m_soldier_dq       = gx::dx12::soldier_graphics_dq::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+                });
+
+                g2.run_and_wait([this, &rc]()
+                {
+                    m_soldier_depth_dq = gx::dx12::soldier_graphics_depth_dq::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+                });
             });
 
             //load preprocessed textured model
@@ -396,19 +414,34 @@ namespace uc
             auto&& back_buffer  = m_resources.back_buffer(device_resources::swap_chains::background);
             auto w = back_buffer->width();
             auto h = back_buffer->height();
+            auto a = static_cast<float>(static_cast<float>(w) / static_cast<float>(h));
 
             auto&& depth_buffer = m_resources.resource_create_context()->create_frame_depth_buffer(w, h, DXGI_FORMAT_D32_FLOAT);
             auto graphics       = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
 
             //
+            /*
             pinhole_camera camera;
-
             camera.set_view_position(math::point3(0, 0, -5));
-            pinhole_camera_helper::set_look_at(&camera, math::point3(0, 0, 5), math::vector3(0, 0, -5), math::vector3(0, 1, 0));
+            pinhole_camera_helper::set_look_at(&camera, math::point3(0, 2, -5), math::vector3(0, 2, 0), math::vector3(0, 1, 0));
+            auto perspective = perspective_matrix(camera);
+            */
 
+            orthographic_camera camera;
+            camera.set_view_position(math::point3(1, 1, -5));
+            camera.set_up(math::vector3(0, 1, 0));
+            camera.set_forward(math::vector3(0, 0, 1));
+
+            camera.set_x_min(-2 * a);
+            camera.set_y_min(-2);
+            
+            camera.set_x_max(2 * a);
+            camera.set_y_max(2);
+            
             auto perspective = perspective_matrix(camera);
             auto view		 = view_matrix(camera);
-            auto world		 = math::identity_matrix();
+            auto world       = math::rotation_y( 90.0f * 3.140f / 180.0f );
+            auto world_dq    = math::mul(math::translation(0, 0, 2), world);
 
             interop::frame f;
 
@@ -429,62 +462,125 @@ namespace uc
 
             //depth
             {
-                graphics->set_pso(m_soldier_depth);
-                graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
+                {
+                    graphics->set_pso(m_soldier_depth);
+                    graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
 
-                graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
-                
+                    graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
 
-                graphics->set_graphics_constant_buffer(1, f);
-                graphics->set_graphics_srv_buffer(2, m_geometry.get());
-                graphics->set_graphics_constant_buffer(5, constants_pass);
 
-                graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+                    graphics->set_graphics_constant_buffer(1, f);
+                    graphics->set_graphics_srv_buffer(2, m_geometry.get());
+                    graphics->set_graphics_constant_buffer(5, constants_pass);
+
+                    graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+
+                    {
+                        auto m = transpose(world);
+                        graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+                    }
+                    graphics->draw_indexed(m_mesh.m_indices_size / 4);
+                }
 
                 {
-                    auto m = transpose(world);
-                    graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+                    graphics->set_pso(m_soldier_depth_dq);
+                    graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
+
+                    graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
+
+
+                    graphics->set_graphics_constant_buffer(1, f);
+                    graphics->set_graphics_srv_buffer(2, m_geometry.get());
+                    graphics->set_graphics_constant_buffer(5, constants_pass);
+
+                    graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+
+                    {
+                        auto m = transpose(world_dq);
+                        graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+                    }
+                    graphics->draw_indexed(m_mesh.m_indices_size / 4);
                 }
-                graphics->draw_indexed(m_mesh.m_indices_size / 4);
             }
 
             //opaque
             {
                 graphics->set_render_target(back_buffer, depth_buffer);
-                graphics->set_pso(m_soldier);
+                
 
                 graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
                 graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
                 graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-                graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
-
-                graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
-                
-                graphics->set_graphics_constant_buffer(1, f);
-                graphics->set_graphics_srv_buffer(2, m_geometry.get());
-                graphics->set_graphics_constant_buffer(5, constants_pass);
-
-                graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
-
+                //lbs
                 {
-                    auto m = transpose(world);
-                    graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+
+                    graphics->set_pso(m_soldier);
+                    graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
+
+                    graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+
+                    graphics->set_graphics_constant_buffer(1, f);
+                    graphics->set_graphics_srv_buffer(2, m_geometry.get());
+                    graphics->set_graphics_constant_buffer(5, constants_pass);
+
+                    graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+
+                    {
+                        auto m = transpose(world);
+                        graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+                    }
+
+
+
+                    for (auto i = 0U; i < m_mesh_opaque.m_opaque_textures.size(); ++i)
+                    {
+                        graphics->set_graphics_dynamic_descriptor(4, m_mesh_opaque.m_opaque_textures[i]->srv());
+                        graphics->draw_indexed(m_mesh_opaque.m_opaque_ranges[i].index_count(), m_mesh_opaque.m_opaque_ranges[i].m_begin);
+                    }
                 }
 
-                for (auto i = 0U; i < m_mesh_opaque.m_opaque_textures.size(); ++i)
+                //dq
                 {
-                    graphics->set_graphics_dynamic_descriptor(4, m_mesh_opaque.m_opaque_textures[i]->srv());
-                    graphics->draw_indexed(m_mesh_opaque.m_opaque_ranges[i].index_count(), m_mesh_opaque.m_opaque_ranges[i].m_begin);
+                    graphics->set_pso(m_soldier_dq);
+                    graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
+
+                    graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
+                    graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+
+                    graphics->set_graphics_constant_buffer(1, f);
+                    graphics->set_graphics_srv_buffer(2, m_geometry.get());
+                    graphics->set_graphics_constant_buffer(5, constants_pass);
+
+                    graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+
+                    {
+                        auto m = transpose(world_dq);
+                        graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+                    }
+
+                    for (auto i = 0U; i < m_mesh_opaque.m_opaque_textures.size(); ++i)
+                    {
+                        graphics->set_graphics_dynamic_descriptor(4, m_mesh_opaque.m_opaque_textures[i]->srv());
+                        graphics->draw_indexed(m_mesh_opaque.m_opaque_ranges[i].index_count(), m_mesh_opaque.m_opaque_ranges[i].m_begin);
+                    }
                 }
             }
 

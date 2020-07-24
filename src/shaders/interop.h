@@ -36,7 +36,7 @@ namespace interop
 
         offset                 m_normal;
         offset                 m_tangent;
-
+        
 
         euclidean_transform_3d m_world;
     };

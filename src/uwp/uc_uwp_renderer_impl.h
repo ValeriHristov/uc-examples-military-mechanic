@@ -21,6 +21,10 @@
 
 #include <soldier_graphics.h>
 #include <soldier_graphics_depth.h>
+
+#include <soldier_graphics_dq.h>
+#include <soldier_graphics_depth_dq.h>
+
 #include <polar_decomposition_pso.h>
 #include <shaders/interop.h>
 
@@ -129,6 +133,10 @@ namespace uc
 
             gx::dx12::soldier_graphics::graphics_pipeline_state*								m_soldier       		= nullptr;
             gx::dx12::soldier_graphics_depth::graphics_pipeline_state*							m_soldier_depth	        = nullptr;
+
+            gx::dx12::soldier_graphics_dq::graphics_pipeline_state*                             m_soldier_dq            = nullptr;
+            gx::dx12::soldier_graphics_depth_dq::graphics_pipeline_state*                       m_soldier_depth_dq      = nullptr;
+
             gx::dx12::polar_decomposition_pso::compute_pipeline_state*                          m_polar_decomposition_pso = nullptr;
             
             float                                                                               m_scale_render = 1.0f;
