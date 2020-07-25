@@ -18,6 +18,7 @@
     <ComputeShader Include  = "..\src\shaders\polar_decomposition_compute.hlsl"></ComputeShader>
 
     <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
+    <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel_dq.hlsl"></PixelShader>
 
     <RootSignature Include  = "..\src\shaders\default_compute_signature.hlsl">
         <EntryPointName>MyRS2</EntryPointName>

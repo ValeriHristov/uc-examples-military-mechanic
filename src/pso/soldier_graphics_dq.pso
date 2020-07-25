@@ -3,7 +3,7 @@ import geometry
 PipelineStateObject soldier_graphics_dq  : solid_geometry =
 {
     .VertexShader           = soldier_geometry_uv_dq
-    .PixelShader            = soldier_geometry_pixel
+    .PixelShader            = soldier_geometry_pixel_dq
 }
 
 

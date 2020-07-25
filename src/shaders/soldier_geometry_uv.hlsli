@@ -5,11 +5,19 @@
 
 #include "interop.h"
 #include "soldier_skin.hlsli"
+#include "math_intrinsics.hlsli"
 
 struct interpolants
 {
     float4 position     : SV_POSITION0;
     float2 uv           : texcoord0;
+};
+
+struct interpolants_dq
+{
+    float4 position     : SV_POSITION0;
+    float2 uv           : texcoord0;
+    float  distance     : texcoord1;
 };
 
 struct input
@@ -65,9 +73,17 @@ uint4 load_blend_indices(uint v)
 }
 
 [RootSignature( MyRS1 ) ]
+#if defined(SKIN_LBS)
 interpolants main(uint v : SV_VERTEXID)
+#else
+interpolants_dq main(uint v : SV_VERTEXID)
+#endif
 {
-    interpolants r = (interpolants)0;
+    #if defined(SKIN_LBS)
+    interpolants r     = (interpolants)0;
+    #else
+    interpolants_dq r  = (interpolants_dq)0;
+    #endif
 
     input i;
 
@@ -80,7 +96,9 @@ interpolants main(uint v : SV_VERTEXID)
     #if defined(SKIN_LBS)
     float3 position2                = skin_position1(float4(i.position,1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
     #else
+    float3 position1                = skin_position1(float4(i.position,1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
     float3 position2                = skin_position2(float4(i.position, 1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
+    r.distance                      = max3( abs(position1 - position2) ) ;
     #endif
 
     point_os position_os            = make_point_os(position2);
