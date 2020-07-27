@@ -15,7 +15,7 @@
     <VertexShader Include   = "..\src\shaders\soldier_geometry_depth_dq.hlsl"></VertexShader>
 
     <ComputeShader Include  = "..\src\shaders\dual_quaternion_test.hlsl"></ComputeShader>
-    <ComputeShader Include  = "..\src\shaders\polar_decomposition_compute.hlsl"></ComputeShader>
+    <ComputeShader Include  = "..\src\shaders\decompose_bones_compute.hlsl"></ComputeShader>
 
     <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel.hlsl"></PixelShader>
     <PixelShader Include    = "..\src\shaders\soldier_geometry_pixel_dq.hlsl"></PixelShader>

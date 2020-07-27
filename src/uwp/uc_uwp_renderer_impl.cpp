@@ -21,6 +21,8 @@
 #include "uwp/file.h"
 
 #include <svd_hlslpp/svd_hlsl.h>
+#define  USE_PIX
+#include <pix3.h>
 
 namespace
 {
@@ -448,21 +450,29 @@ namespace uc
             f.m_perspective.m_value = transpose(perspective);
             f.m_view.m_value = transpose(view);
             
-            graphics->transition_resource(back_buffer, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+            graphics->pix_begin_event(L"frame-setup");
+            
+            char eventName[] = "frame-setup";
 
-            graphics->clear(back_buffer);
-            graphics->clear(depth_buffer);
+            {
+                PIXScopedEvent(graphics->m_command_list.m_list.Get(), 0, L"frame-setup");
+                graphics->transition_resource(back_buffer, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-            graphics->set_render_target(depth_buffer);
-            graphics->set_descriptor_heaps();
+                graphics->clear(back_buffer);
+                graphics->clear(depth_buffer);
 
-            graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
-            graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
-            graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+                graphics->set_render_target(depth_buffer);
+                graphics->set_descriptor_heaps();
+
+                graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
+                graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
+                graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            }
 
             //depth
             {
                 {
+                    PIXScopedEvent(graphics->m_command_list.m_list.Get(), 0, L"depth");
                     graphics->set_pso(m_soldier_depth);
                     graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
                     graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
@@ -486,6 +496,7 @@ namespace uc
                 }
 
                 {
+                    PIXScopedEvent(graphics->m_command_list.m_list.Get(), 0, L"depth-dq");
                     graphics->set_pso(m_soldier_depth_dq);
                     graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
                     graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
@@ -511,16 +522,20 @@ namespace uc
 
             //opaque
             {
-                graphics->set_render_target(back_buffer, depth_buffer);
-                
+                {
+                    PIXScopedEvent(graphics->m_command_list.m_list.Get(), 0, L"opaque-setup");
+                    graphics->set_render_target(back_buffer, depth_buffer);
 
-                graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
-                graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
-                graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+                    graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
+                    graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
+                    graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+                }
 
                 //lbs
                 {
 
+                    PIXScopedEvent(graphics->m_command_list.m_list.Get(), 0, L"soldier-lbs");
                     graphics->set_pso(m_soldier);
                     graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
                     graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
@@ -554,6 +569,7 @@ namespace uc
 
                 //dq
                 {
+                    PIXScopedEvent(graphics->m_command_list.m_list.Get(), 0, L"soldier-dq");
                     graphics->set_pso(m_soldier_dq);
                     graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
                     graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));

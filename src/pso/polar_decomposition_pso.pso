@@ -1,8 +1,0 @@
-PipelineStateObject polar_decomposition_pso =
-{
-    .RootSignature = default_compute_signature
-    .ComputeShader = polar_decomposition_compute
-}
-
-
-

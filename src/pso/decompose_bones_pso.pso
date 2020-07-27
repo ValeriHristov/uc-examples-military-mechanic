@@ -1,0 +1,8 @@
+PipelineStateObject decompose_bones_pso =
+{
+    .RootSignature = default_compute_signature
+    .ComputeShader = decompose_bones_compute
+}
+
+
+

@@ -36,25 +36,41 @@ namespace interop
 
         offset                 m_normal;
         offset                 m_tangent;
-        
 
+        euclidean_transform_3d m_world;
+    };
+
+    struct draw_call_depth
+    {
+        offset                 m_batch;
+        offset                 m_start_vertex;
+
+        offset                 m_blend_weights;
+        offset                 m_blend_indices;
+
+        offset                 m_position;
         euclidean_transform_3d m_world;
     };
 
     #if defined(__cplusplus)
     static_assert(sizeof(draw_call) <= 32 * 4, "64-bit code generation is not supported.");
-    #endif
-
-    #if defined(__cplusplus)
-    struct alignas(4) float3x3
-    {
-        float   r[9];
-    };
+    static_assert(sizeof(draw_call_depth) <= 32 * 4, "64-bit code generation is not supported.");
     #endif
 
     struct skinned_draw_constants
     {
         float4x4 m_joints_palette[127];
+    };
+
+    struct dual_quaternion
+    {
+	float4 m_rotation;
+	float4 m_translation;
+    };
+
+    struct skinned_draw_constants_dq
+    {
+        dual_quaternion m_joints_palette[127];
     };
 }
 
