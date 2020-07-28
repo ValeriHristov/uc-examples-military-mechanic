@@ -402,7 +402,7 @@ namespace uc
             //flush all uploaded resources previous frame
             //make sure the gpu waits for the newly uploaded resources if any
             //flush the previous
-            m_resources.direct_queue(device_resources::swap_chains::background)->pix_begin_event(L"Frame");
+            //m_resources.direct_queue(device_resources::swap_chains::background)->pix_begin_event(L"Frame");
 
             m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.upload_queue()->flush());
             m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
@@ -450,9 +450,6 @@ namespace uc
             f.m_perspective.m_value = transpose(perspective);
             f.m_view.m_value = transpose(view);
             
-            graphics->pix_begin_event(L"frame-setup");
-            
-            char eventName[] = "frame-setup";
 
             {
                 PIXScopedEvent(graphics->m_command_list.m_list.Get(), 0, L"frame-setup");
@@ -558,8 +555,6 @@ namespace uc
                         graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
                     }
 
-
-
                     for (auto i = 0U; i < m_mesh_opaque.m_opaque_textures.size(); ++i)
                     {
                         graphics->set_graphics_dynamic_descriptor(4, m_mesh_opaque.m_opaque_textures[i]->srv());
@@ -610,7 +605,7 @@ namespace uc
             m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
 
             graphics->submit(gpu_command_context::flush_operation::wait_to_execute);
-            m_resources.direct_queue(device_resources::swap_chains::background)->pix_end_event();
+            //m_resources.direct_queue(device_resources::swap_chains::background)->pix_end_event();
         }
 
         void renderer_impl::present()
