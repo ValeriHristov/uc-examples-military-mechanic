@@ -3,6 +3,7 @@
 
 #if !defined(__cplusplus)
 typedef uint uint32_t;
+#include "vector_space.hlsli"
 #else
 #include <uc/math/math.h>
 #include <type_traits>
@@ -62,15 +63,15 @@ namespace interop
         float4x4 m_joints_palette[127];
     };
 
-    struct dual_quaternion
+    struct float4x2
     {
-	float4 m_rotation;
-	float4 m_translation;
+        float4 m_b0;
+        float4 m_b1;
     };
 
     struct skinned_draw_constants_dq
     {
-        dual_quaternion m_joints_palette[127];
+        float4x2 m_joints_palette[127];
     };
 }
 
