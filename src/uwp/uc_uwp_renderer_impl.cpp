@@ -100,7 +100,8 @@ namespace uc
                 }
 
                 auto s = static_cast<uint32_t> (pos + uv + normals + tangents + blend_weights + blend_indices +  indices);
-                m_geometry = gx::dx12::create_byteaddress_buffer(rc, s, D3D12_RESOURCE_STATE_COPY_DEST);
+                m_geometry              = gx::dx12::create_byteaddress_buffer(rc, s, D3D12_RESOURCE_STATE_COPY_DEST);
+                m_skinned_constants_dq  = gx::dx12::create_byteaddress_buffer(rc, static_cast<uint32_t>(sizeof(interop::skinned_draw_constants_dq)), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
                 //allocation
                 m_mesh.m_pos            = 0;
@@ -151,6 +152,11 @@ namespace uc
                 g2.run([this, &rc]()
                 {
                     m_soldier_dq       = gx::dx12::soldier_graphics_dq::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+                });
+
+                g2.run([this, &rc]()
+                {
+                    m_decompose_bones =  gx::dx12::decompose_bones_pso::create_pso( m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler() );
                 });
 
                 g2.run_and_wait([this, &rc]()
@@ -271,6 +277,8 @@ namespace uc
             m_skeleton_instance->reset();
             m_animation_instance->accumulate(m_skeleton_instance.get(), m_frame_time);
 
+            uint32_t joints_count = 0;
+
             interop::skinned_draw_constants constants_pass = {}; //do not clear in production code
 
             {
@@ -280,8 +288,9 @@ namespace uc
                     auto skeleton = m_military_mechanic_skeleton.get();
                     auto joints = gx::anm::local_to_world_joints2(skeleton, m_skeleton_instance->local_transforms());
 
+                    joints_count = joints.size();
                     //todo: avx2
-                    for (auto i = 0U; i < joints.size(); ++i)
+                    for (auto i = 0U; i < joints_count; ++i)
                     {
                         math::float4x4 bind_pose     = math::load44(&skeleton->m_joint_inverse_bind_pose2[i].m_a0);
                         math::float4x4 palette       = math::mul(bind_pose, joints[i]);
@@ -418,8 +427,8 @@ namespace uc
             auto h = back_buffer->height();
             auto a = static_cast<float>(static_cast<float>(w) / static_cast<float>(h));
 
-            auto&& depth_buffer = m_resources.resource_create_context()->create_frame_depth_buffer(w, h, DXGI_FORMAT_D32_FLOAT);
-            auto graphics       = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
+            auto&& depth_buffer = m_resources.resource_create_context()->create_frame_depth_buffer(w, h, DXGI_FORMAT_D32_FLOAT, 1.0f);
+            auto graphics       = create_graphics_compute_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
 
             //
             /*
@@ -449,6 +458,20 @@ namespace uc
 
             f.m_perspective.m_value = transpose(perspective);
             f.m_view.m_value = transpose(view);
+
+            //Decompose
+            {
+                PIXScopedEvent(graphics->m_command_list.m_list.Get(), 0, L"decompose");
+                graphics->transition_resource(m_skinned_constants_dq.get(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
+                graphics->set_pso(m_decompose_bones);
+                graphics->set_compute_root_constant(0, joints_count);
+                graphics->set_compute_constant_buffer(1, &constants_pass);
+                graphics->set_compute_uav_buffer(2, m_skinned_constants_dq.get());
+                graphics->dispatch((joints_count + 63) / 64, 1, 1);
+
+                graphics->transition_resource(m_skinned_constants_dq.get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+            }
             
 
             {
@@ -456,7 +479,7 @@ namespace uc
                 graphics->transition_resource(back_buffer, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
                 graphics->clear(back_buffer);
-                graphics->clear(depth_buffer);
+                graphics->clear_depth(depth_buffer, 1.0f);
 
                 graphics->set_render_target(depth_buffer);
                 graphics->set_descriptor_heaps();

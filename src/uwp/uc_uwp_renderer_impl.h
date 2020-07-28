@@ -24,6 +24,7 @@
 
 #include <soldier_graphics_dq.h>
 #include <soldier_graphics_depth_dq.h>
+#include <decompose_bones_pso.h>
 
 #include <shaders/interop.h>
 
@@ -115,13 +116,13 @@ namespace uc
             window_environment                                                                  m_window_enviroment;
             winrt::Windows::UI::Core::CoreWindow                                                m_window = nullptr;
             winrt::Windows::Graphics::Display::DisplayInformation                               m_display_information = nullptr;
-            
-            gx::dx12::managed_byteaddress_gpu_buffer                                            m_geometry;
 
+            gx::dx12::managed_byteaddress_gpu_buffer                                            m_geometry;
+            gx::dx12::managed_byteaddress_gpu_buffer                                            m_skinned_constants_dq;
+            
             gpu_mesh                                                                            m_mesh;
             gpu_mesh_opaque                                                                     m_mesh_opaque;
             
-
             io::pad                                                                             m_pad;
             io::pad_state                                                                       m_pad_state;
 
@@ -136,6 +137,8 @@ namespace uc
             gx::dx12::soldier_graphics_dq::graphics_pipeline_state*                             m_soldier_dq            = nullptr;
             gx::dx12::soldier_graphics_depth_dq::graphics_pipeline_state*                       m_soldier_depth_dq      = nullptr;
             float                                                                               m_scale_render = 1.0f;
+
+            gx::dx12::decompose_bones_pso::compute_pipeline_state*                              m_decompose_bones = nullptr;
 
             sys::profile_timer                                                                  m_frame_timer;
             double                                                                              m_frame_time;

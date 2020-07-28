@@ -44,7 +44,7 @@ namespace uc
 
                 if (hresult == S_OK)
                 {
-                    //m_debug->EnableDebugLayer();
+                    m_debug->EnableDebugLayer();
 					//m_debug->SetEnableGPUBasedValidation(TRUE);
                 }
             }
