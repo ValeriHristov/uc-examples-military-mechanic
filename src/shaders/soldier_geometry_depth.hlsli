@@ -22,10 +22,17 @@ cbuffer per_draw_call : register(b0)
     interop::draw_call m_draw_call;
 };
 
+#if defined(SKIN_LBS)
 cbuffer per_draw_call_external : register(b2)
 {
     interop::skinned_draw_constants  g_skinned_constants;
 };
+#else
+cbuffer per_draw_call_external : register(b2)
+{
+    interop::skinned_draw_constants_dq  g_skinned_constants;
+};
+#endif
 
 static const uint position_stride = 12;
 static const uint blend_weights_stride = 16;

@@ -528,7 +528,7 @@ namespace uc
 
                     graphics->set_graphics_constant_buffer(1, f);
                     graphics->set_graphics_srv_buffer(2, m_geometry.get());
-                    graphics->set_graphics_constant_buffer(5, constants_pass);
+                    graphics->set_graphics_constant_buffer(5, m_skinned_constants_dq->virtual_address());
 
                     graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
@@ -601,7 +601,7 @@ namespace uc
 
                     graphics->set_graphics_constant_buffer(1, f);
                     graphics->set_graphics_srv_buffer(2, m_geometry.get());
-                    graphics->set_graphics_constant_buffer(5, constants_pass);
+                    graphics->set_graphics_constant_buffer(5, m_skinned_constants_dq->virtual_address());
 
                     graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
