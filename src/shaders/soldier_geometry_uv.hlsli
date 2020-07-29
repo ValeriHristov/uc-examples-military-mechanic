@@ -31,10 +31,17 @@ cbuffer per_draw_call : register(b0)
     interop::draw_call m_draw_call;
 };
 
+#if defined(SKIN_LBS)
 cbuffer per_draw_call_external : register(b2)
 {
     interop::skinned_draw_constants  g_skinned_constants;
 };
+#else
+cbuffer per_draw_call_external : register(b2)
+{
+    interop::skinned_draw_constants_dq  g_skinned_constants;
+};
+#endif
 
 
 static const uint position_stride       = 12;
@@ -96,9 +103,7 @@ interpolants_dq main(uint v : SV_VERTEXID)
     #if defined(SKIN_LBS)
     float3 position2                = skin_position1(float4(i.position,1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
     #else
-    float3 position1                = skin_position1(float4(i.position,1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
     float3 position2                = skin_position2(float4(i.position, 1.0f), weights, indices, g_skinned_constants.m_joints_palette).xyz;
-    r.distance                      = max3( abs(position1 - position2) ) ;
     #endif
 
     point_os position_os            = make_point_os(position2);

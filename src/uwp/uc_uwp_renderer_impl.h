@@ -117,8 +117,8 @@ namespace uc
             winrt::Windows::UI::Core::CoreWindow                                                m_window = nullptr;
             winrt::Windows::Graphics::Display::DisplayInformation                               m_display_information = nullptr;
 
-            gx::dx12::managed_byteaddress_gpu_buffer                                            m_geometry;
-            gx::dx12::managed_byteaddress_gpu_buffer                                            m_skinned_constants_dq;
+            gx::dx12::managed_gpu_byteaddress_buffer                                            m_geometry;
+            gx::dx12::managed_gpu_byteaddress_buffer                                            m_skinned_constants_dq;
             
             gpu_mesh                                                                            m_mesh;
             gpu_mesh_opaque                                                                     m_mesh_opaque;

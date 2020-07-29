@@ -9,6 +9,8 @@ typedef uint uint32_t;
 #include <type_traits>
 #endif
 
+#include "interop_float.h"
+
 
 namespace interop
 {
@@ -63,15 +65,9 @@ namespace interop
         float4x4 m_joints_palette[127];
     };
 
-    struct float4x2
-    {
-        float4 m_b0;
-        float4 m_b1;
-    };
-
     struct skinned_draw_constants_dq
     {
-        float4x2 m_joints_palette[127];
+        interop::float4x2 m_joints_palette[127];
     };
 }
 

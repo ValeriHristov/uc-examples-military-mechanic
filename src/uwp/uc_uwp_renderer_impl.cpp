@@ -466,7 +466,7 @@ namespace uc
 
                 graphics->set_pso(m_decompose_bones);
                 graphics->set_compute_root_constant(0, joints_count);
-                graphics->set_compute_constant_buffer(1, &constants_pass);
+                graphics->set_compute_constant_buffer(1, constants_pass);
                 graphics->set_compute_uav_buffer(2, m_skinned_constants_dq.get());
                 graphics->dispatch((joints_count + 63) / 64, 1, 1);
 

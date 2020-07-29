@@ -7,17 +7,6 @@ namespace interop
     {
         float4x4 m_joints_palette[127];
     };
-
-    struct float4x2
-    {
-        float4 m_b0;
-        float4 m_b1;
-    };
-
-     struct skinned_draw_constants_dq
-    {
-        float4x2 m_joints_palette[127];
-    };
 }
 
 cbuffer bone_count : register(b0)
@@ -46,11 +35,16 @@ void main(uint3 v : SV_DispatchThreadID)
 
         decompose(m, r, t);
         quaternion  q = quat(r);
-
         dual_quaternion dq0 = dual_quat(q, t);
 
-        b.Store4(bone * 32, asuint(dq0.m_real.m_v));
+        b.Store4(bone * 32,      asuint(dq0.m_real.m_v));
         b.Store4(bone * 32 + 16, asuint(dq0.m_dual.m_v));
+
+        //float4 r0 = m[0];
+        //float4 r1 = m[3];
+ 
+        //b.Store4(bone * 32,      asuint(r0));
+        //b.Store4(bone * 32 + 16, asuint(r1));
     }
 }
 

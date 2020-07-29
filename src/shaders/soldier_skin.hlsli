@@ -2,6 +2,7 @@
 #define __transform_skinned_hlsli__
 
 #include "dual_quaternion.hlsli"
+#include "interop_float.h"
 
 //todo: replace with quaternions
 float4 skin_position(float4 position, float4x4 joint_transform, float weight)
@@ -62,7 +63,7 @@ void decompose( float4x4 joint, out float3x3 rotation, out float3 translation)
     rotation._33    = joint._33;
 }
 
-float4 skin_position2(float4 position, float4 weights, float4 indices, float4x4 joints[127])
+float4 skin_position3(float4 position, float4 weights, float4 indices, float4x4 joints[127])
 {
     float3x3    rotation0;
     float3x3    rotation1;
@@ -89,6 +90,35 @@ float4 skin_position2(float4 position, float4 weights, float4 indices, float4x4 
     dual_quaternion dq1     = dual_quat( quaternion1, translation1);
     dual_quaternion dq2     = dual_quat( quaternion2, translation2);
     dual_quaternion dq3     = dual_quat( quaternion3, translation3);
+
+    //Per vertex
+
+    quaternion pivot          = rotation(dq0);
+    dual_quaternion  dq_blend = mul( dq0, weights.x);
+
+    weights.y                 *= sign(dot(rotation(dq1), pivot));
+    weights.z                 *= sign(dot(rotation(dq2), pivot));
+    weights.w                 *= sign(dot(rotation(dq3), pivot));
+
+    dq_blend                  = add(dq_blend, mul(dq1, weights.y));
+    dq_blend                  = add(dq_blend, mul(dq2, weights.z));
+    dq_blend                  = add(dq_blend, mul(dq3, weights.w));
+
+    float3 pos                = transformPoint(dq_blend, position.xyz);
+    return float4(pos, 1.0);
+}
+
+float4 skin_position2(float4 position, float4 weights, float4 indices, interop::float4x2 joints[127])
+{
+    interop::float4x2    d0 = joints[indices.x];
+    interop::float4x2    d1 = joints[indices.y];
+    interop::float4x2    d2 = joints[indices.z];
+    interop::float4x2    d3 = joints[indices.w];
+
+    dual_quaternion dq0     = dual_quat( d0.m_b0,   d0.m_b1);
+    dual_quaternion dq1     = dual_quat( d1.m_b0,   d1.m_b1);
+    dual_quaternion dq2     = dual_quat( d2.m_b0,   d2.m_b1);
+    dual_quaternion dq3     = dual_quat( d3.m_b0,   d3.m_b1);
 
     //Per vertex
 

@@ -473,6 +473,14 @@ dual_quaternion dual_quat( quaternion rotation, float3 translation)
     return r;
 }
 
+dual_quaternion dual_quat( float4 real, float4 dual)
+{
+    dual_quaternion r;
+    r.m_real.m_v = real;
+    r.m_dual.m_v = dual;
+    return r;
+}
+
 dual_quaternion mul(dual_quaternion q, float scalar )
 {
     dual_quaternion r;
