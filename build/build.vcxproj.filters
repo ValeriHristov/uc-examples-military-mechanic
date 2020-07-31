@@ -127,5 +127,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\lzham_uwp_x64.dll" />
   </ItemGroup>
 </Project>
