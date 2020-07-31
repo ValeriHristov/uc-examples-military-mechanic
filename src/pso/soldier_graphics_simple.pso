@@ -1,0 +1,10 @@
+import geometry
+
+PipelineStateObject soldier_graphics_simple  : solid_geometry =
+{
+    .VertexShader           = soldier_geometry_simple_vertex
+    .PixelShader            = soldier_geometry_simple_pixel
+}
+
+
+

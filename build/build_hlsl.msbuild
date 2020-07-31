@@ -19,6 +19,9 @@
         <EntryPointName>MyRS1</EntryPointName>
     </RootSignature>
 
+    <VertexShader Include = "..\src\shaders\soldier_geometry_simple_vertex.hlsl"></VertexShader>
+    <PixelShader Include  = "..\src\shaders\soldier_geometry_simple_pixel.hlsl"></PixelShader>
+
 </ItemGroup>
 
 

@@ -145,10 +145,30 @@ namespace uc
                 m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
 
                 m_resources.wait_for_gpu();
-
-                m_soldier          = gx::dx12::soldier_graphics::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
-                m_soldier_depth    = gx::dx12::soldier_graphics_depth::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
             });
+
+            g.run([this]()
+            {
+                using namespace gx::dx12;
+                gpu_resource_create_context* rc = m_resources.resource_create_context();
+                m_soldier = gx::dx12::soldier_graphics::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+            });
+
+            g.run([this]()
+            {
+                using namespace gx::dx12;
+                gpu_resource_create_context* rc = m_resources.resource_create_context();
+
+                m_soldier_depth = gx::dx12::soldier_graphics_depth::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+            });
+
+            g.run([this]()
+            {
+                using namespace gx::dx12;
+                gpu_resource_create_context* rc = m_resources.resource_create_context();
+                m_soldier_simple = gx::dx12::soldier_graphics_simple::create_pso(m_resources.device_d2d12(), rc->null_cbv(), rc->null_srv(), rc->null_uav(), rc->null_sampler());
+            });
+
 
             //load preprocessed textured model
             g.run([this]()
@@ -163,7 +183,6 @@ namespace uc
                 m_military_mechanic_animations = lip::create_from_compressed_lip_file<lip::joint_animations>(L"Assets\\animations\\military_mechanic.animation");
             });
 
-            g.wait();
 
             m_animation_instance = std::make_unique<gx::anm::animation_instance>(m_military_mechanic_animations.get(), m_military_mechanic_skeleton.get());
         }

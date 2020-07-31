@@ -4,6 +4,7 @@
 <ItemGroup> 
    <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics</EntryPointName></GraphicsPipelineStateObject>    
    <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics_depth.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics_depth</EntryPointName></GraphicsPipelineStateObject>    
+   <GraphicsPipelineStateObject Include = "..\src\pso\soldier_graphics_simple.pso"><Backend>UniqueCreatorDev</Backend><EntryPointName>soldier_graphics_simple</EntryPointName></GraphicsPipelineStateObject>    
 </ItemGroup>
 
 </Project> 

@@ -21,6 +21,7 @@
 
 #include <soldier_graphics.h>
 #include <soldier_graphics_depth.h>
+#include <soldier_graphics_simple.h>
 #include <shaders/interop.h>
 
 
@@ -128,6 +129,7 @@ namespace uc
 
             gx::dx12::soldier_graphics::graphics_pipeline_state*								m_soldier       		= nullptr;
             gx::dx12::soldier_graphics_depth::graphics_pipeline_state*							m_soldier_depth	        = nullptr;
+            gx::dx12::soldier_graphics_simple::graphics_pipeline_state*                         m_soldier_simple        = nullptr;
 
             float                                                                               m_scale_render = 1.0f;
 
