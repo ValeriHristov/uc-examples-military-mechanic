@@ -1,6 +1,8 @@
 #ifndef __transform_hlsli__
 #define __transform_hlsli__
 
+#ifndef __cplusplus
+
 /////////////////////////////////////////////////////////////////
 struct point_3d
 {
@@ -175,5 +177,5 @@ vector_ws transform_v_os(vector_os v_os, euclidean_transform_3d world)
     return make_vector_ws(r0.m_value);
 }
 
-
+#endif
 #endif

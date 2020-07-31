@@ -8,6 +8,8 @@ typedef uint uint32_t;
 #include <type_traits>
 #endif
 
+#include "vector_space.hlsli"
+
 
 namespace interop
 {
@@ -48,6 +50,11 @@ namespace interop
     struct skinned_draw_constants
     {
         float4x4 m_joints_palette[127];
+    };
+
+    struct skinned_draw_pixel_constants
+    {
+        float4 m_color;
     };
 }
 

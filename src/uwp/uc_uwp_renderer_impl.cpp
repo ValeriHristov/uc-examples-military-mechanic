@@ -281,7 +281,8 @@ namespace uc
             m_skeleton_instance->reset();
             m_animation_instance->accumulate(m_skeleton_instance.get(), m_frame_time);
 
-            interop::skinned_draw_constants constants_pass;
+            interop::skinned_draw_constants       constants_pass;
+            interop::skinned_draw_pixel_constants material;
 
             {
                 interop::skinned_draw_constants& draw = constants_pass;
@@ -394,6 +395,46 @@ namespace uc
                 graphics->set_graphics_constant_buffer(1, f);
                 graphics->set_graphics_srv_buffer(2, m_geometry.get());
                 graphics->set_graphics_constant_buffer(5, constants_pass);
+
+                graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+
+                {
+                    auto m = transpose(world);
+                    graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+                }
+
+                for (auto i = 0U; i < m_mesh_opaque.m_opaque_textures.size(); ++i)
+                {
+                    graphics->set_graphics_dynamic_descriptor(4, m_mesh_opaque.m_opaque_textures[i]->srv());
+                    graphics->draw_indexed(m_mesh_opaque.m_opaque_ranges[i].index_count(), m_mesh_opaque.m_opaque_ranges[i].m_begin);
+                }
+            }
+
+            //opaque2
+            {
+                graphics->set_render_target(back_buffer, depth_buffer);
+                graphics->set_pso(m_soldier_simple);
+
+                graphics->set_view_port({ 0.0,0.0,static_cast<float>(w),static_cast<float>(h),0.0,1.0 });
+                graphics->set_scissor_rectangle({ 0,0,(int32_t)w,(int32_t)(h) });
+                graphics->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+                graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
+
+                graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+
+                graphics->set_graphics_constant_buffer(1, f);
+                graphics->set_graphics_srv_buffer(2, m_geometry.get());
+                graphics->set_graphics_constant_buffer(5, constants_pass);
+
+                material.m_color = { 1,0,0,0 };
+                graphics->set_graphics_dynamic_constant_buffer(3, 0, material);
 
                 graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
