@@ -9,11 +9,13 @@
 struct interpolants
 {
     float4 position     : SV_POSITION0;
+    float3 normal       : NORMAL0;
 };
 
 struct input
 {
     float3 position : position;
+    float3 normal   : normal;
 };
 
 cbuffer per_draw_call : register(b0)
@@ -50,6 +52,11 @@ float4 load_blend_weights(uint v)
     return asfloat(b.Load4(m_draw_call.m_blend_weights + v * blend_weights_stride));
 }
 
+float3 load_normal(uint v)
+{
+    return asfloat(b.Load3(m_draw_call.m_normal + v * normal_stride));
+}
+
 uint4 load_blend_indices(uint v)
 {
     uint bytes  = b.Load(m_draw_call.m_blend_indices + v * blend_indices_stride);
@@ -69,15 +76,18 @@ interpolants main(uint v : SV_VERTEXID)
     input i;
 
     i.position                      = load_vertex(v);
+    i.normal                        = load_normal(v);
     float4 weights                  = load_blend_weights(v);
     uint4  indices                  = load_blend_indices(v);
 
     float3 position2                = skin_position(float4(i.position,1.0f), weights, indices, m_joints_palette).xyz;
+    float3 normal2                  = skin_normal(i.normal, weights, indices, m_joints_palette).xyz;
 
     point_os position_os            = make_point_os(position2);
     euclidean_transform_3d  world   = m_draw_call.m_world;
 
     r.position                      = project_p_os(position_os, world, m_frame.m_view, m_frame.m_perspective).m_value;
+    r.normal                        = normal2;
     
     return r;
 }
