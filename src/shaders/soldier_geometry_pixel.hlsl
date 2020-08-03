@@ -5,6 +5,7 @@ struct interpolants
 {
     float4 position     : SV_POSITION0;
     float2 uv           : texcoord0;
+    float3 normal       : NORMAL0;
 };
 
 float checker_board_pattern(float2 uv)
@@ -22,16 +23,12 @@ float4 checker_board(float2 uv)
 
 Texture2D<float4> t         : register(t1);
 
-
-
 [RootSignature( MyRS1 ) ]
 float4 main( interpolants r ) : SV_Target0
 {
-//    return checker_board(r.uv);
+    float3 l    = normalize(float3( 0, 1,1));
+    float3 n    = normalize(r.normal);
+    float2 te   = float2(r.uv.x, r.uv.y);
 
-    //float2 te = float2(r.uv.x, 1- r.uv.y);
-    float2 te = float2(r.uv.x, r.uv.y);
-    return t.Sample(g_linear_clamp , te);
-
-    //return float4(1.0f, 0.0f, 0.0f, 1.0f);
+    return t.Sample(g_linear_clamp , te) * dot(n,l);
 }
