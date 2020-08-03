@@ -177,5 +177,28 @@ vector_ws transform_v_os(vector_os v_os, euclidean_transform_3d world)
     return make_vector_ws(r0.m_value);
 }
 
+euclidean_transform_3d   inverse(euclidean_transform_3d  t)
+{
+    euclidean_transform_3d r;
+
+    r.m_value._11 = t.m_value._11;
+    r.m_value._12 = t.m_value._21;
+    r.m_value._13 = t.m_value._31;
+
+    r.m_value._21 = t.m_value._12;
+    r.m_value._22 = t.m_value._22;
+    r.m_value._23 = t.m_value._32;
+
+    r.m_value._31 = t.m_value._13;
+    r.m_value._32 = t.m_value._23;
+    r.m_value._33 = t.m_value._33;
+
+    //todo; check
+    r.m_value._41 = -t.m_value._41;
+    r.m_value._42 = -t.m_value._42;
+    r.m_value._43 = -t.m_value._43;
+    r.m_value._44 =  t.m_value._44;
+}
+
 #endif
 #endif
