@@ -198,20 +198,6 @@ namespace uc
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 ctx->submit();
 
                 //flush all uploaded resources previous frame
@@ -400,11 +386,12 @@ namespace uc
             pinhole_camera camera;
 
             camera.set_view_position(math::point3(0, 0, -5));
-            pinhole_camera_helper::set_look_at(&camera, math::point3(0, 0, 5), math::vector3(0, 0, -5), math::vector3(0, 1, 0));
+            pinhole_camera_helper::set_look_at(&camera, math::point3(10, 0, 10), math::vector3(0, 0, -5), math::vector3(0, 1, 0));
 
             auto perspective = perspective_matrix(camera);
             auto view		 = view_matrix(camera);
-            auto world		 = math::identity_matrix();
+            auto world0		 = math::identity_matrix();
+            auto world1      = math::translation(0, 0, 5);
 
             interop::frame f;
 
@@ -441,7 +428,14 @@ namespace uc
                 graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
                 {
-                    auto m = transpose(world);
+                    auto m = transpose(world0);
+                    graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
+                }
+                graphics->draw_indexed(m_mesh.m_indices_size / 4);
+
+
+                {
+                    auto m = transpose(world1);
                     graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
                 }
                 graphics->draw_indexed(m_mesh.m_indices_size / 4);
@@ -473,7 +467,7 @@ namespace uc
                 graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
 
                 {
-                    auto m = transpose(world);
+                    auto m = transpose(world0);
                     graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
                 }
 
@@ -510,7 +504,7 @@ namespace uc
                 graphics->set_index_buffer({ m_geometry2->virtual_address() + m_mesh2.m_indices, m_mesh2.m_indices_size, DXGI_FORMAT_R32_UINT });
 
                 {
-                    auto m = transpose(world);
+                    auto m = transpose(world1);
                     graphics->set_graphics_root_constants(0, sizeof(m) / sizeof(uint32_t), &m, offsetof(interop::draw_call, m_world) / sizeof(uint32_t));
                 }
 
