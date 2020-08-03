@@ -198,6 +198,7 @@ euclidean_transform_3d   inverse(euclidean_transform_3d  t)
     r.m_value._42 = -t.m_value._42;
     r.m_value._43 = -t.m_value._43;
     r.m_value._44 =  t.m_value._44;
+    return r;
 }
 
 #endif

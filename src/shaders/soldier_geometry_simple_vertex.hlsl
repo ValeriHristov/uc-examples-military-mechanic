@@ -83,12 +83,15 @@ interpolants main(uint v : SV_VERTEXID)
     float3 position2                = skin_position(float4(i.position,1.0f), weights, indices, m_joints_palette).xyz;
     float3 normal2                  = skin_normal(i.normal, weights, indices, m_joints_palette).xyz;
 
-    point_os position_os            = make_point_os(position2);
+    point_os  position_os            = make_point_os(position2);
+    vector_os normal_os              = make_vector_os(normal2);
+    
     euclidean_transform_3d  world   = m_draw_call.m_world;
+    euclidean_transform_3d  world_i = inverse(world);
 
     r.position                      = project_p_os(position_os, world, m_frame.m_view, m_frame.m_perspective).m_value;
-    r.normal                        = normal2;
-    
+    r.normal                        = transform_v_os(normal_os, world_i).m_value;
+
     return r;
 }
 
