@@ -95,10 +95,16 @@ namespace uc
                 uint32_t index_count() const { return m_end - m_begin; }
             };
 
-            struct gpu_mesh_opaque
+            struct gpu_mesh_textured_opaque 
             {
-                std::vector<gx::dx12::managed_gpu_texture_2d>	m_opaque_textures;
-                std::vector< gpu_primitive_range >				m_opaque_ranges;
+                std::vector<gx::dx12::managed_gpu_texture_2d>	                                m_opaque_textures;
+                std::vector< gpu_primitive_range >				                                m_opaque_ranges;
+            };
+
+            struct gpu_multi_material_mesh
+            {
+                std::vector< gpu_primitive_range >				                                m_opaque_ranges;
+                std::vector< math::float4 >				                                        m_opaque_colors;
             };
 
             device_resources                                                                    m_resources;
@@ -116,9 +122,13 @@ namespace uc
             gx::dx12::managed_gpu_byteaddress_buffer                                            m_geometry;
 
             gpu_mesh                                                                            m_mesh;
-            gpu_mesh_opaque                                                                     m_mesh_opaque;
-            
+            gpu_mesh_textured_opaque                                                            m_mesh_opaque;
 
+            gx::dx12::managed_gpu_byteaddress_buffer                                            m_geometry2;
+
+            gpu_mesh                                                                            m_mesh2;
+            gpu_multi_material_mesh                                                             m_mesh2_opaque;
+            
             io::pad                                                                             m_pad;
             io::pad_state                                                                       m_pad_state;
 

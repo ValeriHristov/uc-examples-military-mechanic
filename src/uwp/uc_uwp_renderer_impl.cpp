@@ -69,74 +69,148 @@ namespace uc
             {
                 using namespace gx::dx12;
 
-                const auto mesh         = lip::create_from_compressed_lip_file<lip::derivatives_skinned_model>(L"Assets\\models\\military_mechanic.derivatives_skinned_model.model");
-                const auto pos          = static_cast<uint32_t>(align(size(mesh->m_positions),  256U));
-                const auto uv           = static_cast<uint32_t>(align(size(mesh->m_uv),         256U));
-                const auto normals      = static_cast<uint32_t>(align(size(mesh->m_normals),    256UL));
-                const auto tangents     = static_cast<uint32_t>(align(size(mesh->m_tangents),   256UL));
-                const auto indices      = static_cast<uint32_t>(align(size(mesh->m_indices),    256UL));
-                const auto blend_weight_size = mesh->m_blend_weights.size() * sizeof(lip::float4);
-                const auto blend_indices_size = mesh->m_blend_indices.size() * sizeof(lip::ubyte4);
-
-                const auto blend_weights      = static_cast<uint32_t>(align(blend_weight_size, 256UL) );
-                const auto blend_indices      = static_cast<uint32_t>(align(blend_indices_size, 256UL));
-                
-
                 gpu_resource_create_context* rc = m_resources.resource_create_context();
-
                 gx::dx12::managed_graphics_command_context ctx = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
 
-                m_mesh_opaque.m_opaque_textures.resize(mesh->m_textures.size());
-                m_mesh_opaque.m_opaque_ranges.resize(mesh->m_primitive_ranges.size());
-
-                for (auto i = 0U; i < mesh->m_textures.size(); ++i)
                 {
-                    const auto& texture = mesh->m_textures[i];
+                    const auto mesh = lip::create_from_compressed_lip_file<lip::derivatives_skinned_model>(L"Assets\\models\\military_mechanic.derivatives_skinned_model.model");
+                    const auto pos = static_cast<uint32_t>(align(size(mesh->m_positions), 256U));
+                    const auto uv = static_cast<uint32_t>(align(size(mesh->m_uv), 256U));
+                    const auto normals = static_cast<uint32_t>(align(size(mesh->m_normals), 256UL));
+                    const auto tangents = static_cast<uint32_t>(align(size(mesh->m_tangents), 256UL));
+                    const auto indices = static_cast<uint32_t>(align(size(mesh->m_indices), 256UL));
+                    const auto blend_weight_size = mesh->m_blend_weights.size() * sizeof(lip::float4);
+                    const auto blend_indices_size = mesh->m_blend_indices.size() * sizeof(lip::ubyte4);
 
-                    auto w = texture.m_levels[0].m_width;
-                    auto h = texture.m_levels[0].m_height;
+                    const auto blend_weights = static_cast<uint32_t>(align(blend_weight_size, 256UL));
+                    const auto blend_indices = static_cast<uint32_t>(align(blend_indices_size, 256UL));
 
-                    m_mesh_opaque.m_opaque_textures[i] = gx::dx12::create_texture_2d(rc, w, h, static_cast<DXGI_FORMAT>(texture.m_levels[0].view()), D3D12_RESOURCE_STATE_COPY_DEST);
-                    D3D12_SUBRESOURCE_DATA s[1];
-                    s[0] = gx::sub_resource_data(&texture.m_levels[0]);
-                    ctx->upload_resource(m_mesh_opaque.m_opaque_textures[i].get(), 0, 1, &s[0]);
+                    m_mesh_opaque.m_opaque_textures.resize(mesh->m_textures.size());
+                    m_mesh_opaque.m_opaque_ranges.resize(mesh->m_primitive_ranges.size());
+
+                    for (auto i = 0U; i < mesh->m_textures.size(); ++i)
+                    {
+                        const auto& texture = mesh->m_textures[i];
+
+                        auto w = texture.m_levels[0].m_width;
+                        auto h = texture.m_levels[0].m_height;
+
+                        m_mesh_opaque.m_opaque_textures[i] = gx::dx12::create_texture_2d(rc, w, h, static_cast<DXGI_FORMAT>(texture.m_levels[0].view()), D3D12_RESOURCE_STATE_COPY_DEST);
+                        D3D12_SUBRESOURCE_DATA s[1];
+                        s[0] = gx::sub_resource_data(&texture.m_levels[0]);
+                        ctx->upload_resource(m_mesh_opaque.m_opaque_textures[i].get(), 0, 1, &s[0]);
+                    }
+
+                    for (auto i = 0U; i < mesh->m_primitive_ranges.size(); ++i)
+                    {
+                        const auto& r = mesh->m_primitive_ranges[i];
+                        m_mesh_opaque.m_opaque_ranges[i].m_begin = r.m_begin;
+                        m_mesh_opaque.m_opaque_ranges[i].m_end = r.m_end;
+                    }
+
+                    auto s = static_cast<uint32_t> (pos + uv + normals + tangents + blend_weights + blend_indices + indices);
+                    m_geometry = gx::dx12::create_byteaddress_buffer(rc, s, D3D12_RESOURCE_STATE_COPY_DEST);
+
+                    //allocation
+                    m_mesh.m_pos = 0;
+                    m_mesh.m_uv = pos;
+                    m_mesh.m_normals = pos + uv;
+                    m_mesh.m_tangents = pos + uv + normals;
+                    m_mesh.m_blend_weights = pos + uv + normals + tangents;
+                    m_mesh.m_blend_indices = pos + uv + normals + tangents + blend_weights;
+                    m_mesh.m_indices = pos + uv + normals + tangents + blend_weights + blend_indices;
+                    m_mesh.m_indices_size = static_cast<uint32_t>(size(mesh->m_indices));
+                    m_mesh.m_vertex_count = static_cast<uint32_t>(mesh->m_positions.size());
+
+                    ctx->upload_buffer(m_geometry.get(), m_mesh.m_pos, mesh->m_positions.data(), size(mesh->m_positions));
+                    ctx->upload_buffer(m_geometry.get(), m_mesh.m_uv, mesh->m_uv.data(), size(mesh->m_uv));
+                    ctx->upload_buffer(m_geometry.get(), m_mesh.m_normals, mesh->m_normals.data(), size(mesh->m_normals));
+                    ctx->upload_buffer(m_geometry.get(), m_mesh.m_tangents, mesh->m_tangents.data(), size(mesh->m_tangents));
+                    ctx->upload_buffer(m_geometry.get(), m_mesh.m_blend_weights, mesh->m_blend_weights.data(), blend_weight_size);
+                    ctx->upload_buffer(m_geometry.get(), m_mesh.m_blend_indices, mesh->m_blend_indices.data(), blend_indices_size);
+                    ctx->upload_buffer(m_geometry.get(), m_mesh.m_indices, mesh->m_indices.data(), size(mesh->m_indices));
+
+                    ctx->transition_resource(m_geometry.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+
+                    for (auto&& t : m_mesh_opaque.m_opaque_textures)
+                    {
+                        ctx->transition_resource(t.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+                    }
                 }
 
-                for (auto i = 0U; i < mesh->m_primitive_ranges.size(); ++i)
                 {
-                    const auto& r = mesh->m_primitive_ranges[i];
-                    m_mesh_opaque.m_opaque_ranges[i].m_begin = r.m_begin;
-                    m_mesh_opaque.m_opaque_ranges[i].m_end = r.m_end;
+                    const auto mesh = lip::create_from_compressed_lip_file<lip::derivatives_skinned_multi_material_model>(L"Assets\\models\\military_mechanic.derivatives_skinned_multi_material_model.model");
+                    const auto pos = static_cast<uint32_t>(align(size(mesh->m_positions), 256U));
+                    const auto uv = static_cast<uint32_t>(align(size(mesh->m_uv), 256U));
+                    const auto normals = static_cast<uint32_t>(align(size(mesh->m_normals), 256UL));
+                    const auto tangents = static_cast<uint32_t>(align(size(mesh->m_tangents), 256UL));
+                    const auto indices = static_cast<uint32_t>(align(size(mesh->m_indices), 256UL));
+                    const auto blend_weight_size = mesh->m_blend_weights.size() * sizeof(lip::float4);
+                    const auto blend_indices_size = mesh->m_blend_indices.size() * sizeof(lip::ubyte4);
+
+                    const auto blend_weights = static_cast<uint32_t>(align(blend_weight_size, 256UL));
+                    const auto blend_indices = static_cast<uint32_t>(align(blend_indices_size, 256UL));
+
+                    m_mesh2_opaque.m_opaque_ranges.resize(mesh->m_primitive_ranges.size());
+                    m_mesh2_opaque.m_opaque_colors.resize(mesh->m_primitive_ranges.size());
+
+                    for (auto i = 0U; i < mesh->m_primitive_ranges.size(); ++i)
+                    {
+                        const auto& r = mesh->m_primitive_ranges[i];
+                        m_mesh2_opaque.m_opaque_ranges[i].m_begin = r.m_begin;
+                        m_mesh2_opaque.m_opaque_ranges[i].m_end = r.m_end;
+                    }
+
+                    std::srand(35);
+
+                    for (auto i = 0U; i < mesh->m_primitive_ranges.size(); ++i)
+                    {
+                        size_t r = std::rand() % 255;
+                        size_t g = std::rand() % 255;
+                        size_t b = 0;// std::rand() % 255;
+                        m_mesh2_opaque.m_opaque_colors[i] = { r / 255.0f, g / 255.0f, b / 255.0f, 1.0f };
+                    }
+
+                    auto s = static_cast<uint32_t> (pos + uv + normals + tangents + blend_weights + blend_indices + indices);
+                    m_geometry2 = gx::dx12::create_byteaddress_buffer(rc, s, D3D12_RESOURCE_STATE_COPY_DEST);
+
+                    //allocation
+                    m_mesh2.m_pos = 0;
+                    m_mesh2.m_uv = pos;
+                    m_mesh2.m_normals = pos + uv;
+                    m_mesh2.m_tangents = pos + uv + normals;
+                    m_mesh2.m_blend_weights = pos + uv + normals + tangents;
+                    m_mesh2.m_blend_indices = pos + uv + normals + tangents + blend_weights;
+                    m_mesh2.m_indices = pos + uv + normals + tangents + blend_weights + blend_indices;
+                    m_mesh2.m_indices_size = static_cast<uint32_t>(size(mesh->m_indices));
+                    m_mesh2.m_vertex_count = static_cast<uint32_t>(mesh->m_positions.size());
+
+                    ctx->upload_buffer(m_geometry2.get(), m_mesh2.m_pos, mesh->m_positions.data(), size(mesh->m_positions));
+                    ctx->upload_buffer(m_geometry2.get(), m_mesh2.m_uv, mesh->m_uv.data(), size(mesh->m_uv));
+                    ctx->upload_buffer(m_geometry2.get(), m_mesh2.m_normals, mesh->m_normals.data(), size(mesh->m_normals));
+                    ctx->upload_buffer(m_geometry2.get(), m_mesh2.m_tangents, mesh->m_tangents.data(), size(mesh->m_tangents));
+                    ctx->upload_buffer(m_geometry2.get(), m_mesh2.m_blend_weights, mesh->m_blend_weights.data(), blend_weight_size);
+                    ctx->upload_buffer(m_geometry2.get(), m_mesh2.m_blend_indices, mesh->m_blend_indices.data(), blend_indices_size);
+                    ctx->upload_buffer(m_geometry2.get(), m_mesh2.m_indices, mesh->m_indices.data(), size(mesh->m_indices));
+
+                    ctx->transition_resource(m_geometry2.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
                 }
 
-                auto s = static_cast<uint32_t> (pos + uv + normals + tangents + blend_weights + blend_indices +  indices);
-                m_geometry = gx::dx12::create_byteaddress_buffer(rc, s, D3D12_RESOURCE_STATE_COPY_DEST);
 
-                //allocation
-                m_mesh.m_pos            = 0;
-                m_mesh.m_uv             = pos;
-                m_mesh.m_normals        = pos + uv;
-                m_mesh.m_tangents       = pos + uv + normals;
-                m_mesh.m_blend_weights  = pos + uv + normals + tangents;
-                m_mesh.m_blend_indices  = pos + uv + normals + tangents + blend_weights;
-                m_mesh.m_indices        = pos + uv + normals + tangents + blend_weights + blend_indices;
-                m_mesh.m_indices_size   = static_cast<uint32_t>(size(mesh->m_indices));
-                m_mesh.m_vertex_count   = static_cast<uint32_t>(mesh->m_positions.size());
 
-                ctx->upload_buffer(m_geometry.get(), m_mesh.m_pos, mesh->m_positions.data(), size(mesh->m_positions));
-                ctx->upload_buffer(m_geometry.get(), m_mesh.m_uv, mesh->m_uv.data(), size(mesh->m_uv));
-                ctx->upload_buffer(m_geometry.get(), m_mesh.m_normals, mesh->m_normals.data(), size(mesh->m_normals));
-                ctx->upload_buffer(m_geometry.get(), m_mesh.m_tangents, mesh->m_tangents.data(), size(mesh->m_tangents));
-                ctx->upload_buffer(m_geometry.get(), m_mesh.m_blend_weights, mesh->m_blend_weights.data(), blend_weight_size);
-                ctx->upload_buffer(m_geometry.get(), m_mesh.m_blend_indices, mesh->m_blend_indices.data(), blend_indices_size);
-                ctx->upload_buffer(m_geometry.get(), m_mesh.m_indices, mesh->m_indices.data(), size(mesh->m_indices));
 
-                ctx->transition_resource(m_geometry.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
-                for (auto&& t : m_mesh_opaque.m_opaque_textures)
-                {
-                    ctx->transition_resource(t.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-                }
+
+
+
+
+
+
+
+
+
+
+
 
                 ctx->submit();
 
@@ -421,22 +495,19 @@ namespace uc
 
                 graphics->set_graphics_root_constant(0, 1, offsetof(interop::draw_call, m_batch) / sizeof(uint32_t));
                 graphics->set_graphics_root_constant(0, 0, offsetof(interop::draw_call, m_start_vertex) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh2.m_blend_weights, offsetof(interop::draw_call, m_blend_weights) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh2.m_blend_indices, offsetof(interop::draw_call, m_blend_indices) / sizeof(uint32_t));
 
-                graphics->set_graphics_root_constant(0, m_mesh.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
-                graphics->set_graphics_root_constant(0, m_mesh.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh2.m_pos, offsetof(interop::draw_call, m_position) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh2.m_uv, offsetof(interop::draw_call, m_uv) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh2.m_normals, offsetof(interop::draw_call, m_normal) / sizeof(uint32_t));
+                graphics->set_graphics_root_constant(0, m_mesh2.m_tangents, offsetof(interop::draw_call, m_tangent) / sizeof(uint32_t));
 
                 graphics->set_graphics_constant_buffer(1, f);
-                graphics->set_graphics_srv_buffer(2, m_geometry.get());
+                graphics->set_graphics_srv_buffer(2, m_geometry2.get());
                 graphics->set_graphics_constant_buffer(5, constants_pass);
 
-                material.m_color = { 1,0,0,0 };
-                graphics->set_graphics_dynamic_constant_buffer(3, 0, material);
-
-                graphics->set_index_buffer({ m_geometry->virtual_address() + m_mesh.m_indices, m_mesh.m_indices_size, DXGI_FORMAT_R32_UINT });
+                graphics->set_index_buffer({ m_geometry2->virtual_address() + m_mesh2.m_indices, m_mesh2.m_indices_size, DXGI_FORMAT_R32_UINT });
 
                 {
                     auto m = transpose(world);
@@ -445,8 +516,9 @@ namespace uc
 
                 for (auto i = 0U; i < m_mesh_opaque.m_opaque_textures.size(); ++i)
                 {
-                    graphics->set_graphics_dynamic_descriptor(4, m_mesh_opaque.m_opaque_textures[i]->srv());
-                    graphics->draw_indexed(m_mesh_opaque.m_opaque_ranges[i].index_count(), m_mesh_opaque.m_opaque_ranges[i].m_begin);
+                    material.m_color = m_mesh2_opaque.m_opaque_colors[i];
+                    graphics->set_graphics_dynamic_constant_buffer(3, 0, material);
+                    graphics->draw_indexed(m_mesh2_opaque.m_opaque_ranges[i].index_count(), m_mesh2_opaque.m_opaque_ranges[i].m_begin);
                 }
             }
 

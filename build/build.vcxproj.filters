@@ -128,5 +128,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\lzham_uwp_x64.dll" />
+    <None Include="$(MSBuildThisFileDirectory)\..\..\lib\native\animations\military_mechanic.animation" />
+    <None Include="$(MSBuildThisFileDirectory)\..\..\lib\native\models\military_mechanic.derivatives_skinned_model.model" />
+    <None Include="$(MSBuildThisFileDirectory)\..\..\lib\native\models\military_mechanic.derivatives_skinned_multi_material_model.model" />
+    <None Include="$(MSBuildThisFileDirectory)\..\..\lib\native\skeletons\military_mechanic.skeleton" />
   </ItemGroup>
 </Project>
