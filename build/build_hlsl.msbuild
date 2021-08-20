@@ -22,6 +22,9 @@
     <VertexShader Include = "..\src\shaders\soldier_geometry_simple_vertex.hlsl"></VertexShader>
     <PixelShader Include  = "..\src\shaders\soldier_geometry_simple_pixel.hlsl"></PixelShader>
 
+    <VertexShader Include = "..\src\shaders\imgui_vertex.hlsl"></VertexShader>
+    <PixelShader Include  = "..\src\shaders\imgui_pixel.hlsl"></PixelShader>
+
 </ItemGroup>
 
 
