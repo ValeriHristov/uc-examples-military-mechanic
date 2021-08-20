@@ -146,9 +146,10 @@ namespace uc
                     ImGuiIO& io = ImGui::GetIO();
                     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
-                    m_font = gx::dx12::create_texture_2d(resources->resource_create_context(), width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+                    m_font = gx::dx12::create_texture_2d(resources->resource_create_context(), width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, D3D12_RESOURCE_STATE_COPY_DEST);
                     D3D12_SUBRESOURCE_DATA s = sub_resource_data(width, height, pixels);
                     ctx->upload_resource(m_font.get(), 0, 1, &s);
+                    ctx->transition_resource(m_font.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
                     io.Fonts->TexID = (void*)m_font.get();
                     io.MousePos = ImVec2(100, 100);
