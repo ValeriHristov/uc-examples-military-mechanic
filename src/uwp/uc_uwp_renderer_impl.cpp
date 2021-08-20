@@ -196,6 +196,8 @@ namespace uc
                     ctx->transition_resource(m_geometry2.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
                 }
 
+
+
                 ctx->submit();
 
                 //flush all uploaded resources previous frame
