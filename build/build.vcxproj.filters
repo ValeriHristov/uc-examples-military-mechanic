@@ -52,6 +52,9 @@
     <ClInclude Include="..\src\uwp\uc_uwp_gx_submitable.h">
       <Filter>src\uwp</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_imgui.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\uwp\uc_uwp_renderer.h">
       <Filter>src\uwp</Filter>
     </ClInclude>
@@ -64,9 +67,13 @@
     <ClInclude Include="..\src\uwp\uc_uwp_renderer_impl_window.h">
       <Filter>src\uwp</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\uwp\uc_uwp_renderer_overlay_page.h">
+      <Filter>src\uwp</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\uwp\uc_uwp_ui_helper.h">
       <Filter>src\uwp</Filter>
     </ClInclude>
+    <ClInclude Include="..\3rdparty\imgui\imgui.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src" />
@@ -76,6 +83,7 @@
     <ClCompile Include="..\src\pch\pch.cpp">
       <Filter>src\pch</Filter>
     </ClCompile>
+    <ClCompile Include="..\3rdparty\imgui\imgui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src" />
@@ -106,10 +114,16 @@
     <ClCompile Include="..\src\uwp\uc_uwp_gx_render_context.cpp">
       <Filter>src\uwp</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\uwp\uc_uwp_imgui.cpp">
+      <Filter>src\uwp</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\uwp\uc_uwp_renderer.cpp">
       <Filter>src\uwp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\uwp\uc_uwp_renderer_impl.cpp">
+      <Filter>src\uwp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uwp\uc_uwp_renderer_overlay_page.cpp">
       <Filter>src\uwp</Filter>
     </ClCompile>
   </ItemGroup>
@@ -126,8 +140,8 @@
     <AppxManifest Include="package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="$(MSBuildThisFileDirectory)..\bin\win-x64\lzham_uwp_x64.dll" />
+    <None Include="packages.config" />
     <None Include="$(MSBuildThisFileDirectory)\..\..\lib\native\animations\military_mechanic.animation" />
     <None Include="$(MSBuildThisFileDirectory)\..\..\lib\native\models\military_mechanic.derivatives_skinned_model.model" />
     <None Include="$(MSBuildThisFileDirectory)\..\..\lib\native\models\military_mechanic.derivatives_skinned_multi_material_model.model" />

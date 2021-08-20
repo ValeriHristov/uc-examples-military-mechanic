@@ -196,8 +196,6 @@ namespace uc
                     ctx->transition_resource(m_geometry2.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
                 }
 
-
-
                 ctx->submit();
 
                 //flush all uploaded resources previous frame
@@ -515,6 +513,10 @@ namespace uc
                     graphics->draw_indexed(m_mesh2_opaque.m_opaque_ranges[i].index_count(), m_mesh2_opaque.m_opaque_ranges[i].m_begin);
                 }
             }
+
+
+
+
 
             graphics->transition_resource(back_buffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 

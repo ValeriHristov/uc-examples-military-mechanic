@@ -58,7 +58,7 @@ namespace uc
 
             struct update_context
             {
-                double            m_frame_time;
+                double              m_frame_time;
                 
                 device_resources*   m_resources;
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\uc-io-input.1.0.14\build\native\uc-io-input.props" Condition="Exists('packages\uc-io-input.1.0.14\build\native\uc-io-input.props')" />
   <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.props')" />
@@ -87,7 +87,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>../src/pch;../src;../resources;../shaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../src/pch;../src;../resources;../shaders;../3rdparty/imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
@@ -121,6 +121,7 @@
   <Import Project="build_cpp.msbuild" />
   <Import Project="build_hlsl.msbuild" />
   <Import Project="build_pso.msbuild" />
+  <Import Project="build_3rdparty.msbuild" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

@@ -13,6 +13,8 @@
 <ClCompile Include = "..\src\uwp\uc_uwp_device_resources.cpp" />	
 <ClCompile Include = "..\src\uwp\uc_uwp_device_swap_chain_resources.cpp" />	
 <ClCompile Include = "..\src\uwp\uc_uwp_gx_render_context.cpp" />	
+<ClCompile Include = "..\src\uwp\uc_uwp_imgui.cpp" />	
 <ClCompile Include = "..\src\uwp\uc_uwp_renderer.cpp" />	
-<ClCompile Include = "..\src\uwp\uc_uwp_renderer_impl.cpp" />
+<ClCompile Include = "..\src\uwp\uc_uwp_renderer_impl.cpp" />	
+<ClCompile Include = "..\src\uwp\uc_uwp_renderer_overlay_page.cpp" />
 </ItemGroup></Project> 
