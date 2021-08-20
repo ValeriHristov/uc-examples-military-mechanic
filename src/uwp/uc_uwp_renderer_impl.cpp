@@ -20,6 +20,8 @@
 
 #include "uwp/file.h"
 
+#include "uc_uwp_gx_render_context.h"
+
 namespace
 {
     size_t align(size_t v, size_t a)
@@ -197,6 +199,12 @@ namespace uc
                 }
 
 
+                {
+                    gxu::initialize_context ictx = { &m_resources, ctx.get() };
+
+                    m_imgui_page = std::make_unique<imgui::options_page>(&ictx);
+
+                }
 
                 ctx->submit();
 
@@ -515,10 +523,6 @@ namespace uc
                     graphics->draw_indexed(m_mesh2_opaque.m_opaque_ranges[i].index_count(), m_mesh2_opaque.m_opaque_ranges[i].m_begin);
                 }
             }
-
-
-
-
 
             graphics->transition_resource(back_buffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 

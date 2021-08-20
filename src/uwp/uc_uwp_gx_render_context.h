@@ -17,6 +17,7 @@ namespace uc
             class gpu_depth_buffer;
             class gpu_msaa_depth_buffer;
             class gpu_color_buffer;
+            struct gpu_graphics_command_context;
         }
 
         namespace geo
@@ -74,8 +75,8 @@ namespace uc
 
             struct initialize_context
             {
-                device_resources*               m_resources;
-                gx::geo::geometry_allocator*    m_geometry;
+                device_resources*                        m_resources;
+                gx::dx12::gpu_graphics_command_context * m_upload_ctx;
             };
         }
     }

@@ -93,7 +93,7 @@ DepthStencilDescription imgui_depth_stencil =
 
 PipelineStateObject imgui_graphics  =
 {
-    .RootSignature          = default_graphics_signature
+    .RootSignature          = default_graphics_signature_imgui
     .VertexShader           = imgui_vertex
     .PixelShader            = imgui_pixel
 

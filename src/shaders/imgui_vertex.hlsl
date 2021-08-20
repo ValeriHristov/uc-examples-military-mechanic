@@ -33,7 +33,7 @@ float4 project_vertex(float4 v_os, float4x4 world, float4x4 view, float4x4 persp
     return result;
 }
 
-[RootSignature( MyRS1 ) ]
+[RootSignature( MyRS_IMGUI ) ]
 interpolants main(input i)
 {
     interpolants r;

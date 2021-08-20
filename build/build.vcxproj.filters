@@ -84,6 +84,7 @@
       <Filter>src\pch</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\imgui\imgui.cpp" />
+    <ClCompile Include="..\3rdparty\imgui\imgui_draw.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src" />

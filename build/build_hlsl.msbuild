@@ -19,6 +19,10 @@
         <EntryPointName>MyRS1</EntryPointName>
     </RootSignature>
 
+    <RootSignature Include = "..\src\shaders\default_graphics_signature_imgui.hlsl">
+        <EntryPointName>MyRS_IMGUI</EntryPointName>
+    </RootSignature>
+
     <VertexShader Include = "..\src\shaders\soldier_geometry_simple_vertex.hlsl"></VertexShader>
     <PixelShader Include  = "..\src\shaders\soldier_geometry_simple_pixel.hlsl"></PixelShader>
 

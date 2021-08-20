@@ -101,36 +101,19 @@ namespace uc
                 math::float4x4 m_world;
             };
 
-            options_page::options_page(gxu::initialize_context* ctx ) : super(ctx)
+            options_page::options_page(gxu::initialize_context* ictx ) : super(ictx)
             {
-                auto resources = ctx->m_resources;
+                auto resources = ictx->m_resources;
+                auto ctx       = ictx->m_upload_ctx;
 
                 concurrency::task_group g;
-
-                g.run([this, resources]
-                {
-                    uint8_t* pixels;
-                    int32_t  width;
-                    int32_t  height;
-
-                    ImGuiIO& io = ImGui::GetIO();
-                    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-
-                    m_font = gx::dx12::create_texture_2d(resources->resource_create_context(), width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-                    D3D12_SUBRESOURCE_DATA s = sub_resource_data(width, height, pixels);
-                    resources->upload_queue()->upload_texture_2d(m_font.get(), 0, 1, &s);
-
-                    io.Fonts->TexID = (void *)m_font.get();
-
-                    io.MousePos = ImVec2(100, 100);
-                });
 
                 g.run([this, resources]
                 {
                     m_imgui_pso = gx::dx12::create_pso(resources->device_d2d12(), resources->resource_create_context(), gx::dx12::imgui_graphics::create_pso);
                 });
 
-                g.run([this]()
+                
                 {
                     ImGuiIO& io = ImGui::GetIO();
                     
@@ -153,7 +136,23 @@ namespace uc
                     io.KeyMap[ImGuiKey_X] = ABI::Windows::System::VirtualKey::VirtualKey_X; //'X';
                     io.KeyMap[ImGuiKey_Y] = ABI::Windows::System::VirtualKey::VirtualKey_Y; //'Y';
                     io.KeyMap[ImGuiKey_Z] = ABI::Windows::System::VirtualKey::VirtualKey_Z; //'Z';
-                });
+                }
+
+                {
+                    uint8_t* pixels;
+                    int32_t  width;
+                    int32_t  height;
+
+                    ImGuiIO& io = ImGui::GetIO();
+                    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+
+                    m_font = gx::dx12::create_texture_2d(resources->resource_create_context(), width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+                    D3D12_SUBRESOURCE_DATA s = sub_resource_data(width, height, pixels);
+                    ctx->upload_resource(m_font.get(), 0, 1, &s);
+
+                    io.Fonts->TexID = (void*)m_font.get();
+                    io.MousePos = ImVec2(100, 100);
+                }
 
                 g.wait();
             }
