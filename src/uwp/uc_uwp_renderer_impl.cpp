@@ -564,7 +564,7 @@ namespace uc
 			m_resources.direct_queue(device_resources::swap_chains::overlay)->insert_wait_on(m_resources.upload_queue()->flush());
 			m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
 
-            graphics->submit();
+            graphics->submit(gpu_command_context::flush_operation::do_not_wait_to_execute);
             submitable->submit();
 
             m_resources.direct_queue(device_resources::swap_chains::background)->pix_end_event();
