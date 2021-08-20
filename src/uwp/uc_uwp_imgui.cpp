@@ -162,7 +162,7 @@ namespace uc
 
             }
 
-            static bool enable_statistics   = false;
+            static bool enable_statistics   = true;
             static bool enable_console      = false;
             static bool enable_log          = false;
 

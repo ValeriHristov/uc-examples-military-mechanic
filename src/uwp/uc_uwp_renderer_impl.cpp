@@ -312,6 +312,19 @@ namespace uc
             m_frame_timer.reset();
 
             process_user_input();
+
+            gxu::update_context uctx = {};
+
+            uctx.m_frame_time = m_frame_time;
+            uctx.m_resources  = &m_resources;
+            uctx.m_pad_state   = m_pad_state;
+            uctx.m_mouse_state = m_mouse_state;
+            uctx.m_keyboard_state = m_keyboard_state;
+            uctx.m_back_buffer_size = { static_cast<uint16_t>(m_window_enviroment.m_back_buffer_size.Width), static_cast<uint16_t>(m_window_enviroment.m_back_buffer_size.Height) };
+            uctx.m_front_buffer_size = uctx.m_back_buffer_size;
+
+            m_imgui_page->update(&uctx);
+
         }
 
         void renderer_impl::flush_prerender_queue()
