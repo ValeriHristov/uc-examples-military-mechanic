@@ -32,7 +32,7 @@ namespace uc
                     swapChainDesc.SampleDesc.Count      = 1;                                    // Don't use multi-sampling.
                     swapChainDesc.SampleDesc.Quality    = 0;
                     swapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-                    swapChainDesc.BufferCount           = 3;                                    // Use triple-buffering to minimize latency.
+                    swapChainDesc.BufferCount           = 2;                                    // Use triple-buffering to minimize latency.
                     swapChainDesc.SwapEffect            = DXGI_SWAP_EFFECT_FLIP_DISCARD;        // All Windows Universal apps must use _FLIP_ SwapEffects
                     swapChainDesc.Flags                 = 0;
                     swapChainDesc.Scaling               = scaling;
@@ -70,7 +70,7 @@ namespace uc
                     swapChainDesc.SampleDesc.Count = 1;                                    // Don't use multi-sampling.
                     swapChainDesc.SampleDesc.Quality = 0;
                     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-                    swapChainDesc.BufferCount = 3;                                    // Use triple-buffering to minimize latency.
+                    swapChainDesc.BufferCount = 2;                                    // Use triple-buffering to minimize latency.
                     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;        // All Windows Universal apps must use _FLIP_ SwapEffects
                     swapChainDesc.Flags = 0;
                     swapChainDesc.Scaling = scaling;
@@ -104,8 +104,8 @@ namespace uc
                     swapChainDesc.SampleDesc.Count      = 1;                                            // Don't use multi-sampling.
                     swapChainDesc.SampleDesc.Quality    = 0;
                     swapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-                    swapChainDesc.BufferCount           = 3;                                            // Use triple-buffering to minimize latency.
-                    swapChainDesc.SwapEffect            =  DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;            // for hud rendering we will use partial presentation optimizations
+                    swapChainDesc.BufferCount           = 2;                                            // Use triple-buffering to minimize latency.
+                    swapChainDesc.SwapEffect            = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;            // for hud rendering we will use partial presentation optimizations
                     swapChainDesc.Flags                 = DXGI_SWAP_CHAIN_FLAG_FOREGROUND_LAYER;
                     swapChainDesc.Scaling               = scaling;
                     swapChainDesc.AlphaMode             = DXGI_ALPHA_MODE_PREMULTIPLIED;
@@ -140,7 +140,7 @@ namespace uc
                     swapChainDesc.SampleDesc.Count = 1;                                            // Don't use multi-sampling.
                     swapChainDesc.SampleDesc.Quality = 0;
                     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-                    swapChainDesc.BufferCount = 3;                                            // Use triple-buffering to minimize latency.
+                    swapChainDesc.BufferCount = 2;                                            // Use triple-buffering to minimize latency.
                     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;            // for hud rendering we will use partial presentation optimizations
                     swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_FOREGROUND_LAYER;
                     swapChainDesc.Scaling = scaling;
@@ -165,7 +165,7 @@ namespace uc
                 static inline uint64_t next_frame(uint64_t frame)
                 {
                     uint64_t r = frame + 1;
-                    return r % 3;
+                    return r % 2;
                 }
             }
 
@@ -202,10 +202,9 @@ namespace uc
                 {
                     m_back_buffers[0].reset();
                     m_back_buffers[1].reset();
-                    m_back_buffers[2].reset();
 
                     uint32_t flags = (m_type != swap_chain_type::foreground_core_window) ? 0 : DXGI_SWAP_CHAIN_FLAG_FOREGROUND_LAYER;
-                    gx::dx12::throw_if_failed(m_swap_chain->ResizeBuffers(3, width, height, details::back_buffer_format(), flags));
+                    gx::dx12::throw_if_failed(m_swap_chain->ResizeBuffers(2, width, height, details::back_buffer_format(), flags));
                 }
                 else
                 {
@@ -241,20 +240,17 @@ namespace uc
 
                 auto frame0 = m_current_frame;
                 auto frame1 = details::next_frame(m_current_frame);
-                auto frame2 = details::next_frame(frame1);
 
                 {
                     //Recreate the back buffers
                     Microsoft::WRL::ComPtr<ID3D12Resource> back_buffer[3];
                     gx::dx12::throw_if_failed(m_swap_chain->GetBuffer(0, IID_PPV_ARGS(&back_buffer[0])));
                     gx::dx12::throw_if_failed(m_swap_chain->GetBuffer(1, IID_PPV_ARGS(&back_buffer[1])));
-                    gx::dx12::throw_if_failed(m_swap_chain->GetBuffer(2, IID_PPV_ARGS(&back_buffer[2])));
 
 
                     //when you resize the buffers, buffer0 maps to the current frame, buffer1 next, and buffer2 next
                     m_back_buffers[frame0] = std::unique_ptr<gx::dx12::gpu_back_buffer>(resource_creator->create_back_buffer(back_buffer[0].Get()));
                     m_back_buffers[frame1] = std::unique_ptr<gx::dx12::gpu_back_buffer>(resource_creator->create_back_buffer(back_buffer[1].Get()));
-                    m_back_buffers[frame2] = std::unique_ptr<gx::dx12::gpu_back_buffer>(resource_creator->create_back_buffer(back_buffer[2].Get()));
                 }
             }
 
@@ -266,17 +262,17 @@ namespace uc
             void resources::move_to_next_frame()
             {
                 auto fence = m_direct_queue->increment_fence();
-                m_direct_queue->wait_for_fence( fence - 2 );
+                m_direct_queue->wait_for_fence( fence - 1 );
                 // Advance the frame index.
-                m_current_frame = (m_current_frame + 1) % 3;
+                m_current_frame = (m_current_frame + 1) % 2;
             }
 
-            void resources::present()
+            void resources::present(gx::dx12::gpu_command_queue::present_option o)
             {
                 // The first argument instructs DXGI to block until VSync, putting the application
                 // to sleep until the next VSync. This ensures we don't waste any cycles rendering
                 // frames that will never be displayed to the screen.
-                m_direct_queue->present(m_swap_chain.Get());
+                m_direct_queue->present(m_swap_chain.Get(), o);
             }
 
             void resources::sync()

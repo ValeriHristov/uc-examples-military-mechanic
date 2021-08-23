@@ -258,7 +258,7 @@ namespace uc
         static inline uint64_t next_frame(uint64_t frame)
         {
             uint64_t r = frame + 1;
-            return r % 3;
+            return r % 2;
         }
 
         void renderer_impl::set_display_info(const winrt::Windows::Graphics::Display::DisplayInformation& display_information)
@@ -397,7 +397,7 @@ namespace uc
             m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
 
             m_frame_index += 1;
-            m_frame_index %= 3;
+            m_frame_index %= 2;
 
             auto&& back_buffer  = m_resources.back_buffer(device_resources::swap_chains::background);
             auto w = back_buffer->width();
@@ -564,7 +564,7 @@ namespace uc
 			m_resources.direct_queue(device_resources::swap_chains::overlay)->insert_wait_on(m_resources.upload_queue()->flush());
 			m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
 
-            graphics->submit(gpu_command_context::flush_operation::do_not_wait_to_execute);
+            graphics->submit();
             submitable->submit();
 
             m_resources.direct_queue(device_resources::swap_chains::background)->pix_end_event();
@@ -572,7 +572,7 @@ namespace uc
 
         void renderer_impl::present()
         {
-            m_resources.present();
+            m_resources.present(gx::dx12::gpu_command_queue::present_option::wait_for_vsync);
             m_resources.move_to_next_frame();
             m_resources.sync();
         }
