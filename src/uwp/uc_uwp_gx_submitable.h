@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <vector>
+
 
 #include <uc/gx/dx12/dx12.h>
 #include <uc/util/noncopyable.h>

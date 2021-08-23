@@ -24,12 +24,13 @@
 #include <soldier_graphics_simple.h>
 #include <shaders/interop.h>
 
-
 #include "uc_uwp_device_resources.h"
 #include "uc_uwp_renderer_impl_command.h"
 
 #include "skeleton_instance.h"
 #include "animation_instance.h"
+
+#include "uc_uwp_imgui.h"
 
 struct ISwapChainPanelNative;
 
@@ -160,6 +161,8 @@ namespace uc
 
             //update state
             math::managed_float4x4                                                              m_military_mechanic_transform = math::make_float4x4();
+
+            std::unique_ptr<imgui::options_page>                                                m_imgui_page;
 
         };
     }

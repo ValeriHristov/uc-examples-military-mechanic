@@ -118,13 +118,13 @@ namespace uc
                 m_swap_chains[i]->move_to_next_frame();
         }
 
-        void device_resources::present()
+        void device_resources::present(gx::dx12::gpu_command_queue::present_option o)
         {
             // The first argument instructs DXGI to block until VSync, putting the application
             // to sleep until the next VSync. This ensures we don't waste any cycles rendering
             // frames that will never be displayed to the screen.
             for (auto i = 0U; i < m_swap_chain_count; ++i)
-                m_swap_chains[i]->present();
+                m_swap_chains[i]->present(o);
         }
 
         void device_resources::sync()

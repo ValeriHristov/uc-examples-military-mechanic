@@ -102,7 +102,7 @@ namespace uc
 
                 void wait_for_gpu();
                 void move_to_next_frame();
-                void present();
+                void present(gx::dx12::gpu_command_queue::present_option o);
                 void sync();
 
             private:
@@ -111,7 +111,7 @@ namespace uc
 
                 //dx12 buffers
                 Microsoft::WRL::ComPtr<ID3D12Device>                            m_device_d3d_12;
-                std::unique_ptr<gx::dx12::gpu_back_buffer>                      m_back_buffers[3];
+                std::unique_ptr<gx::dx12::gpu_back_buffer>                      m_back_buffers[2];
 
                 Microsoft::WRL::ComPtr<IDXGISwapChain3>                         m_swap_chain;
 

@@ -20,6 +20,8 @@
 
 #include "uwp/file.h"
 
+#include "uc_uwp_gx_render_context.h"
+
 namespace
 {
     size_t align(size_t v, size_t a)
@@ -197,6 +199,12 @@ namespace uc
                 }
 
 
+                {
+                    gxu::initialize_context ictx = { &m_resources, ctx.get() };
+
+                    m_imgui_page = std::make_unique<imgui::options_page>(&ictx);
+
+                }
 
                 ctx->submit();
 
@@ -250,7 +258,7 @@ namespace uc
         static inline uint64_t next_frame(uint64_t frame)
         {
             uint64_t r = frame + 1;
-            return r % 3;
+            return r % 2;
         }
 
         void renderer_impl::set_display_info(const winrt::Windows::Graphics::Display::DisplayInformation& display_information)
@@ -304,6 +312,22 @@ namespace uc
             m_frame_timer.reset();
 
             process_user_input();
+
+            gxu::update_context uctx = {};
+
+            uctx.m_frame_time = m_frame_time;
+            uctx.m_resources  = &m_resources;
+            uctx.m_pad_state   = m_pad_state;
+            uctx.m_mouse_state = m_mouse_state;
+            uctx.m_keyboard_state = m_keyboard_state;
+
+			uctx.m_back_buffer_size.m_width = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::background)->width() * m_scale_render);
+            uctx.m_back_buffer_size.m_height = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::background)->height() * m_scale_render);
+
+            uctx.m_front_buffer_size.m_width = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::overlay)->width());
+            uctx.m_front_buffer_size.m_height = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::overlay)->height());
+
+            m_imgui_page->update(&uctx);
         }
 
         void renderer_impl::flush_prerender_queue()
@@ -373,7 +397,7 @@ namespace uc
             m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
 
             m_frame_index += 1;
-            m_frame_index %= 3;
+            m_frame_index %= 2;
 
             auto&& back_buffer  = m_resources.back_buffer(device_resources::swap_chains::background);
             auto w = back_buffer->width();
@@ -518,20 +542,37 @@ namespace uc
 
             graphics->transition_resource(back_buffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
-            //if we did upload through the pci bus, insert waits
-            m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.upload_queue()->flush());
-            m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
 
-            m_resources.direct_queue(device_resources::swap_chains::overlay)->insert_wait_on(m_resources.upload_queue()->flush());
-            m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
+            gxu::render_context rctx;
 
-            graphics->submit(gpu_command_context::flush_operation::wait_to_execute);
+			rctx.m_back_buffer_size.m_width     = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::background)->width()  * m_scale_render);
+			rctx.m_back_buffer_size.m_height    = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::background)->height() * m_scale_render);
+
+			rctx.m_front_buffer_size.m_width    = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::overlay)->width());
+			rctx.m_front_buffer_size.m_height   = static_cast<uint16_t>(m_resources.back_buffer(device_resources::swap_chains::overlay)->height());
+            rctx.m_back_buffer_scaled_size      = rctx.m_back_buffer_size;
+            rctx.m_frame_time = m_frame_time;
+            rctx.m_resources = &m_resources;
+
+            std::unique_ptr< submitable > submitable = m_imgui_page->render(&rctx);
+            
+
+			//if we did upload through the pci bus, insert waits
+			m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.upload_queue()->flush());
+			m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
+
+			m_resources.direct_queue(device_resources::swap_chains::overlay)->insert_wait_on(m_resources.upload_queue()->flush());
+			m_resources.direct_queue(device_resources::swap_chains::background)->insert_wait_on(m_resources.compute_queue()->signal_fence());
+
+            graphics->submit();
+            submitable->submit();
+
             m_resources.direct_queue(device_resources::swap_chains::background)->pix_end_event();
         }
 
         void renderer_impl::present()
         {
-            m_resources.present();
+            m_resources.present(gx::dx12::gpu_command_queue::present_option::wait_for_vsync);
             m_resources.move_to_next_frame();
             m_resources.sync();
         }

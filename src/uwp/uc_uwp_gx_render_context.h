@@ -17,6 +17,7 @@ namespace uc
             class gpu_depth_buffer;
             class gpu_msaa_depth_buffer;
             class gpu_color_buffer;
+            struct gpu_graphics_command_context;
         }
 
         namespace geo
@@ -40,15 +41,12 @@ namespace uc
             struct render_context
             {
                 device_resources*                   m_resources;
-                gx::geo::geometry_allocator*        m_geometry;
-                gx::dx12::gpu_depth_buffer*         m_view_depth_buffer;
 
                 size                                m_back_buffer_size;
                 size                                m_back_buffer_scaled_size;
 
                 size                                m_front_buffer_size;
                 double                              m_frame_time;
-                float                               m_scale_render;
             };
 
             struct shadow_render_context : public render_context
@@ -58,7 +56,7 @@ namespace uc
 
             struct update_context
             {
-                double            m_frame_time;
+                double              m_frame_time;
                 
                 device_resources*   m_resources;
 
@@ -74,8 +72,8 @@ namespace uc
 
             struct initialize_context
             {
-                device_resources*               m_resources;
-                gx::geo::geometry_allocator*    m_geometry;
+                device_resources*                        m_resources;
+                gx::dx12::gpu_graphics_command_context * m_upload_ctx;
             };
         }
     }

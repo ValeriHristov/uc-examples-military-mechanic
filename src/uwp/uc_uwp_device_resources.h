@@ -40,7 +40,7 @@ namespace uc
             void wait_for_gpu();
             void move_to_next_frame();
             void sync();
-            void present();
+            void present(gx::dx12::gpu_command_queue::present_option o);
 
             swap_chain::resources* swap_chain(swap_chains s) const
             {
