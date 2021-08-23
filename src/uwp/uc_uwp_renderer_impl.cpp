@@ -11,7 +11,6 @@
 
 #define UWP
 
-#include <uc/gx/pinhole_camera.h>
 #include <uc/gx/lip/lip.h>
 #include <uc/gx/lip_utils.h>
 
@@ -245,6 +244,8 @@ namespace uc
 
 
             m_animation_instance = std::make_unique<gx::anm::animation_instance>(m_military_mechanic_animations.get(), m_military_mechanic_skeleton.get());
+
+            gx::pinhole_camera_helper::set_look_at(&m_camera, math::point3(10, 0, 10), math::vector3(0, 0, -5), math::vector3(0, 1, 0));
         }
 
         static inline uint64_t next_frame(uint64_t frame)
@@ -304,6 +305,37 @@ namespace uc
             m_frame_timer.reset();
 
             process_user_input();
+            update_camera();
+        }
+
+        void renderer_impl::update_camera()
+        {
+            using namespace gx;
+            using namespace uc::math;
+
+            if (m_keyboard_state.is_button_down(io::keyboard_state::virtual_key_w))
+            {
+                pinhole_camera_helper::walk(&m_camera, (float)m_frame_time);
+            }
+            else if (m_keyboard_state.is_button_down(io::keyboard_state::virtual_key_s))
+            {
+                pinhole_camera_helper::walk(&m_camera, (float)-m_frame_time);
+            }
+
+            if (m_keyboard_state.is_button_down(io::keyboard_state::virtual_key_a))
+            {
+                pinhole_camera_helper::strafe(&m_camera, (float)m_frame_time);
+            }
+            else if (m_keyboard_state.is_button_down(io::keyboard_state::virtual_key_d))
+            {
+                pinhole_camera_helper::strafe(&m_camera, (float)-m_frame_time);
+            }
+
+            if (m_mouse_state.is_button_down(io::mouse_state::mouse_mask::middle))
+            {
+                 pinhole_camera_helper::pitch(&m_camera, -m_mouse_state.dy() / 2050.0f);
+                 pinhole_camera_helper::yaw(&m_camera, m_mouse_state.dx() / 2050.0f);
+            }
         }
 
         void renderer_impl::flush_prerender_queue()
@@ -333,13 +365,19 @@ namespace uc
             using namespace gx;
             using namespace gx::dx12;
 
-            concurrency::task_group g;
-
             m_frame_time = m_frame_timer.milliseconds();
             m_frame_timer.reset();
 
             m_skeleton_instance->reset();
-            m_animation_instance->accumulate(m_skeleton_instance.get(), m_frame_time);
+
+            auto step = m_frame_time;
+
+            if (m_keyboard_state.is_button_down(io::keyboard_state::virtual_key_x))
+            {
+                step = 0;
+            }
+
+            m_animation_instance->accumulate(m_skeleton_instance.get(), step);
 
             interop::skinned_draw_constants       constants_pass;
             interop::skinned_draw_pixel_constants material;
@@ -382,14 +420,9 @@ namespace uc
             auto&& depth_buffer = m_resources.resource_create_context()->create_frame_depth_buffer(w, h, DXGI_FORMAT_D32_FLOAT);
             auto graphics       = create_graphics_command_context(m_resources.direct_command_context_allocator(device_resources::swap_chains::background));
 
-            //
-            pinhole_camera camera;
 
-            camera.set_view_position(math::point3(0, 0, -5));
-            pinhole_camera_helper::set_look_at(&camera, math::point3(10, 0, 10), math::vector3(0, 0, -5), math::vector3(0, 1, 0));
-
-            auto perspective = perspective_matrix(camera);
-            auto view		 = view_matrix(camera);
+            auto perspective = perspective_matrix(m_camera);
+            auto view		 = view_matrix(m_camera);
             auto world0		 = math::identity_matrix();
             auto world1      = math::translation(0, 0, 5);
 
