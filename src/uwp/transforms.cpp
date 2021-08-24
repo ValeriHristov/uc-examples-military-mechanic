@@ -111,7 +111,7 @@ namespace uc
 
                 while (parent_index != 0xFFFF)
                 {
-                    auto parent_transform = local_transforms[parent_index];
+                    const auto& parent_transform = local_transforms[parent_index];
                     local_transform = math::mul(local_transform, parent_transform);
                     parent_index = s->m_joint_linkage2[parent_index];
                 }

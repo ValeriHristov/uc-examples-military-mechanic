@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\uc-graphics.1.0.60\build\native\uc-graphics.props" Condition="Exists('packages\uc-graphics.1.0.60\build\native\uc-graphics.props')" />
+  <Import Project="packages\uc-graphics.1.0.65\build\native\uc-graphics.props" Condition="Exists('packages\uc-graphics.1.0.65\build\native\uc-graphics.props')" />
   <Import Project="packages\uc-io-input.1.0.14\build\native\uc-io-input.props" Condition="Exists('packages\uc-io-input.1.0.14\build\native\uc-io-input.props')" />
   <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.props')" />
   <Import Project="packages\uc-serialization-engine.1.0.21\build\native\uc-serialization-engine.props" Condition="Exists('packages\uc-serialization-engine.1.0.21\build\native\uc-serialization-engine.props')" />
@@ -149,9 +149,8 @@
     <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.targets'))" />
     <Error Condition="!Exists('packages\uc-io-input.1.0.14\build\native\uc-io-input.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-io-input.1.0.14\build\native\uc-io-input.props'))" />
     <Error Condition="!Exists('packages\uc-io-input.1.0.14\build\native\uc-io-input.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-io-input.1.0.14\build\native\uc-io-input.targets'))" />
-    <Error Condition="!Exists('packages\WinPixEventRuntime.1.0.210818001\build\WinPixEventRuntime.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\WinPixEventRuntime.1.0.210818001\build\WinPixEventRuntime.targets'))" />
-    <Error Condition="!Exists('packages\uc-graphics.1.0.60\build\native\uc-graphics.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-graphics.1.0.60\build\native\uc-graphics.props'))" />
-    <Error Condition="!Exists('packages\uc-graphics.1.0.60\build\native\uc-graphics.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-graphics.1.0.60\build\native\uc-graphics.targets'))" />
+    <Error Condition="!Exists('packages\uc-graphics.1.0.65\build\native\uc-graphics.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-graphics.1.0.65\build\native\uc-graphics.props'))" />
+    <Error Condition="!Exists('packages\uc-graphics.1.0.65\build\native\uc-graphics.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\uc-graphics.1.0.65\build\native\uc-graphics.targets'))" />
   </Target>
   <Import Project="packages\microsoft-gsl-library.1.0.8\build\native\microsoft-gsl-library.targets" Condition="Exists('packages\microsoft-gsl-library.1.0.8\build\native\microsoft-gsl-library.targets')" />
   <Import Project="packages\uc-core.1.0.18\build\native\uc-core.targets" Condition="Exists('packages\uc-core.1.0.18\build\native\uc-core.targets')" />
@@ -165,6 +164,5 @@
   <Import Project="packages\uc-serialization-engine.1.0.21\build\native\uc-serialization-engine.targets" Condition="Exists('packages\uc-serialization-engine.1.0.21\build\native\uc-serialization-engine.targets')" />
   <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.targets')" />
   <Import Project="packages\uc-io-input.1.0.14\build\native\uc-io-input.targets" Condition="Exists('packages\uc-io-input.1.0.14\build\native\uc-io-input.targets')" />
-  <Import Project="packages\WinPixEventRuntime.1.0.210818001\build\WinPixEventRuntime.targets" Condition="Exists('packages\WinPixEventRuntime.1.0.210818001\build\WinPixEventRuntime.targets')" />
-  <Import Project="packages\uc-graphics.1.0.60\build\native\uc-graphics.targets" Condition="Exists('packages\uc-graphics.1.0.60\build\native\uc-graphics.targets')" />
+  <Import Project="packages\uc-graphics.1.0.65\build\native\uc-graphics.targets" Condition="Exists('packages\uc-graphics.1.0.65\build\native\uc-graphics.targets')" />
 </Project>

@@ -9,6 +9,7 @@
 #include <uc/gx/lip/animation.h>
 
 #include <uc/gx/dx12/dx12.h>
+#include <uc/gx/pinhole_camera.h>
 #include <uc/sys/profile_timer.h>
 
 #include <uc/gx/geo/geometry_allocator.h>
@@ -18,6 +19,8 @@
 #include <uc/io/pad.h>
 #include <uc/io/mouse.h>
 #include <uc/io/keyboard.h>
+
+
 
 #include <soldier_graphics.h>
 #include <soldier_graphics_depth.h>
@@ -55,6 +58,7 @@ namespace uc
             ~renderer_impl();
 
             void update();
+            void update_camera();
             void pre_render();
             void render();
             void process_user_input();
@@ -158,7 +162,7 @@ namespace uc
             std::unique_ptr< gx::anm::skeleton_instance >                                       m_skeleton_instance;
             std::unique_ptr< gx::anm::animation_instance>                                       m_animation_instance;
 
-
+            gx::pinhole_camera                                                                  m_camera;
             //update state
             math::managed_float4x4                                                              m_military_mechanic_transform = math::make_float4x4();
 

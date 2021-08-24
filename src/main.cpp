@@ -4,7 +4,6 @@
 #include <uc/os/windows/com_initializer.h>
 
 #include "uwp/uc_uwp_renderer.h"
-
 using namespace winrt::Windows::ApplicationModel;
 using namespace winrt::Windows::ApplicationModel::Core;
 using namespace winrt::Windows::ApplicationModel::Activation;
